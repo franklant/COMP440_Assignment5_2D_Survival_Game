@@ -198,6 +198,10 @@ public class PlayerScript : MonoBehaviour
             {
                 // find a specifc collision object by name
                 Debug.Log(c.name);
+                if (c.tag == "Enemy")
+                {
+                    c.attachedRigidbody.linearVelocity = new Vector3(-1, 0, 0) * 5;
+                }
             }
         }
 
@@ -211,6 +215,10 @@ public class PlayerScript : MonoBehaviour
             {
                 // find a specifc collision object by name
                 Debug.Log(c.name);
+                if (c.tag == "Enemy")
+                {
+                    c.attachedRigidbody.linearVelocity = new Vector3(1, 0, 0) * 5;
+                }
             }
         }
 
@@ -224,6 +232,10 @@ public class PlayerScript : MonoBehaviour
             {
                 // find a specifc collision object by name
                 Debug.Log(c.name);
+                if (c.tag == "Enemy")
+                {
+                    c.attachedRigidbody.linearVelocity = new Vector3(0, 1, 0) * 5;
+                }
             }
         }
         
@@ -237,6 +249,10 @@ public class PlayerScript : MonoBehaviour
             {
                 // find a specifc collision object by name
                 Debug.Log(c.name);
+                if (c.tag == "Enemy")
+                {
+                    c.attachedRigidbody.linearVelocity = new Vector3(0, -1, 0) * 5;
+                }
             }
         }
     }

@@ -164,10 +164,10 @@
     <Compile Include="Library\PackageCache\com.unity.test-framework@40b8da2bd3e9\UnityEngine.TestRunner\Utils\TestRunCallbackAttribute.cs" />
     <Compile Include="Library\PackageCache\com.unity.test-framework@40b8da2bd3e9\UnityEngine.TestRunner\Assertions\Is.cs" />
     <Compile Include="Library\PackageCache\com.unity.test-framework@40b8da2bd3e9\UnityEngine.TestRunner\Utils\AssemblyProvider\IAssemblyLoadProxy.cs" />
-    <Compile Include="Library\PackageCache\com.unity.test-framework@40b8da2bd3e9\UnityEngine.TestRunner\TestRunner\TestEnumeratorWrapper.cs" />
     <Compile Include="Library\PackageCache\com.unity.test-framework@40b8da2bd3e9\UnityEngine.TestRunner\Utils\IPrebuildSetup.cs" />
     <Compile Include="Library\PackageCache\com.unity.test-framework@40b8da2bd3e9\UnityEngine.TestRunner\Utils\QuaternionEqualityComparer.cs" />
     <Compile Include="Library\PackageCache\com.unity.test-framework@40b8da2bd3e9\UnityEngine.TestRunner\NUnitExtensions\Commands\ImmediateEnumerableCommand.cs" />
+    <Compile Include="Library\PackageCache\com.unity.test-framework@40b8da2bd3e9\UnityEngine.TestRunner\TestRunner\TestEnumeratorWrapper.cs" />
     <Compile Include="Library\PackageCache\com.unity.test-framework@40b8da2bd3e9\UnityEngine.TestRunner\NUnitExtensions\Commands\EnumerableApplyChangesToContextCommand.cs" />
     <Compile Include="Library\PackageCache\com.unity.test-framework@40b8da2bd3e9\UnityEngine.TestRunner\NUnitExtensions\IStateSerializer.cs" />
     <Compile Include="Library\PackageCache\com.unity.test-framework@40b8da2bd3e9\UnityEngine.TestRunner\TestRunner\RemoteHelpers\PlayerConnectionMessageIds.cs" />

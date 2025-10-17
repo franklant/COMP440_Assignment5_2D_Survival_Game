@@ -79,6 +79,16 @@
       "source": "registry",
       "testable": false
     },
+    "com.unity.ai.navigation@2.0.9": {
+      "name": "com.unity.ai.navigation",
+      "displayName": "AI Navigation",
+      "resolvedPath": "C:\\Users\\frank\\UnityProjects\\COMP440_Assignment5_2D_Survival_Game\\COMP440_Assignment5_2D_Survival_Game\\Library\\PackageCache\\com.unity.ai.navigation@5218e4bf7edc",
+      "fingerprint": "5218e4bf7edc04fcad4ed3836c1c41aef334b996",
+      "editorCompatibility": "6000.0.0a1",
+      "version": "2.0.9",
+      "source": "registry",
+      "testable": false
+    },
     "com.unity.collab-proxy@2.9.3": {
       "name": "com.unity.collab-proxy",
       "displayName": "Unity Version Control",
