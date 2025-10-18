@@ -11,6 +11,7 @@ public class PlayerScript : MonoBehaviour
     public GameObject upHitBox;
     public GameObject downHitBox;
     public float movementSpeed;
+    public float knockBack = 7;
     private string direction = "down";          // keeps track of the players current direction
     private bool isAttacking = false;
     private bool isMoving = false;
@@ -200,7 +201,9 @@ public class PlayerScript : MonoBehaviour
                 Debug.Log(c.name);
                 if (c.tag == "Enemy")
                 {
-                    c.attachedRigidbody.linearVelocity = new Vector3(-1, 0, 0) * 5;
+                    c.attachedRigidbody.linearVelocity = new Vector3(-1, 0, 0) * knockBack;
+                    c.gameObject.GetComponent<FollowPlayerScript>().health -= 1;
+                    return;
                 }
             }
         }
@@ -217,7 +220,9 @@ public class PlayerScript : MonoBehaviour
                 Debug.Log(c.name);
                 if (c.tag == "Enemy")
                 {
-                    c.attachedRigidbody.linearVelocity = new Vector3(1, 0, 0) * 5;
+                    c.attachedRigidbody.linearVelocity = new Vector3(1, 0, 0) * knockBack;
+                    c.gameObject.GetComponent<FollowPlayerScript>().health -= 1;
+                    return;
                 }
             }
         }
@@ -234,7 +239,9 @@ public class PlayerScript : MonoBehaviour
                 Debug.Log(c.name);
                 if (c.tag == "Enemy")
                 {
-                    c.attachedRigidbody.linearVelocity = new Vector3(0, 1, 0) * 5;
+                    c.attachedRigidbody.linearVelocity = new Vector3(0, 1, 0) * knockBack;
+                    c.gameObject.GetComponent<FollowPlayerScript>().health -= 1;
+                    return;
                 }
             }
         }
@@ -251,7 +258,9 @@ public class PlayerScript : MonoBehaviour
                 Debug.Log(c.name);
                 if (c.tag == "Enemy")
                 {
-                    c.attachedRigidbody.linearVelocity = new Vector3(0, -1, 0) * 5;
+                    c.attachedRigidbody.linearVelocity = new Vector3(0, -1, 0) * knockBack;
+                    c.gameObject.GetComponent<FollowPlayerScript>().health -= 1;
+                    return;
                 }
             }
         }

@@ -1,5 +1,6 @@
 using System;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
@@ -7,12 +8,16 @@ public class LogicManagerScript : MonoBehaviour
 {
     public GameObject globalLight;  // The "Sun" or our main light source
     private Light2D lightSource;    // The actual light source to control the intensity
+    public GameObject enemy;
+    public GameObject spawnLocation;
+    private bool spawnActive;
     public float minutesInADay = 5; // How many minutes make a full day
     public float currentTime = 0;   // Current time
     private float previousTime = 0; // Prevous time passed
     public float daysElapsed = 0;   // Number of days passed
     private float fullDay;          // How much time goes into a day
     private float sunDirection = 1; // After a certain time, the sun goes down
+    public float temperature = 20;
 
     // Keeping track of the time of day and terminology
     public bool isMorning, isNoon, isNight = false;
@@ -71,6 +76,15 @@ public class LogicManagerScript : MonoBehaviour
             isNoon = false;
             isNight = false;
         }
+
+        // take the difference of the night time and current time to get a precise moment for when the day state changed
+        // ensures that we only spawn enemies once on one frame only
+        float diff = (float)dayStates.NIGHT - currentTime;
+        Debug.Log("precision: " + diff);
+        if (diff > 0.07 && diff <= 0.09)
+        {
+            spawnEnemies();
+        }
     }
 
     void nightAndDayCycle()     // Logic for the Night and Day cycle
@@ -93,12 +107,37 @@ public class LogicManagerScript : MonoBehaviour
             daysElapsed += 1;
         }
 
+        // start setting the sun
         if (Math.Floor(currentTime) >= 150) // Noon
         {
             sunDirection = -1;
         }
 
+        if (currentTime % ((12.5 / 60) * 30) <= 0.0055) // increment the temperature every 30 minutes
+        {
+            temperature += 2 * sunDirection;
+        }
+
         previousTime = currentTime;
+    }
+
+    void spawnEnemies()
+    {
+        // get a list of the transforms from each spawn location
+        Transform[] locations = spawnLocation.GetComponentsInChildren<Transform>();
+        int maxIndex = 11 - 1; // number of locations - 1
+
+        for (int i = 0; i < 5; i++)
+        {
+            int locationIndex = UnityEngine.Random.Range(0, maxIndex);
+            Transform lo = locations[locationIndex];
+
+            if (lo != null)
+            {
+                Instantiate(enemy, lo.position, lo.rotation);
+                locations[locationIndex] = null;    // make the previously selected location no longer available
+            }    
+        }
     }
 
     float getCurrentIntensity()

@@ -334,8 +334,8 @@
     <Compile Include="Library\PackageCache\com.unity.shadergraph@5516e0d97518\Editor\Drawing\Colors\ShaderGraphHeatmapValues.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph@5516e0d97518\Editor\Interface\IConditional.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph@5516e0d97518\Editor\Drawing\Interfaces\ISGControlledElement.cs" />
-    <Compile Include="Library\PackageCache\com.unity.shadergraph@5516e0d97518\Editor\Data\Nodes\Math\Matrix\MatrixConstructionNode.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph@5516e0d97518\Editor\Data\Nodes\GeometryNode.cs" />
+    <Compile Include="Library\PackageCache\com.unity.shadergraph@5516e0d97518\Editor\Data\Nodes\Math\Matrix\MatrixConstructionNode.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph@5516e0d97518\Editor\Generation\Targets\BuiltIn\Editor\ShaderGraph\AssetCallbacks\CreateLitShaderGraph.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph@5516e0d97518\Editor\Data\Interfaces\IMayRequireTime.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph@5516e0d97518\Editor\Drawing\Controls\TextureArrayControl.cs" />

@@ -447,7 +447,7 @@
 -analyzer:"C:/Program Files/Unity/Hub/Editor/6000.2.6f2/Editor/Data/Tools/Unity.SourceGenerators/Unity.Properties.SourceGenerator.dll"
 -analyzer:"C:/Program Files/Unity/Hub/Editor/6000.2.6f2/Editor/Data/Tools/Unity.SourceGenerators/Unity.SourceGenerators.dll"
 -analyzer:"C:/Program Files/Unity/Hub/Editor/6000.2.6f2/Editor/Data/Tools/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll"
-"Assets/Scripts/FollowPlayer.cs"
+"Assets/Scripts/FollowPlayerScript.cs"
 "Assets/Scripts/LightSourceScript.cs"
 "Assets/Scripts/LogicManagerScript.cs"
 "Assets/Scripts/PlayerScript.cs"
