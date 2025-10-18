@@ -80,7 +80,7 @@ public class LogicManagerScript : MonoBehaviour
         // take the difference of the night time and current time to get a precise moment for when the day state changed
         // ensures that we only spawn enemies once on one frame only
         float diff = (float)dayStates.NIGHT - currentTime;
-        Debug.Log("precision: " + diff);
+        //Debug.Log("precision: " + diff);
         if (diff > 0.07 && diff <= 0.09)
         {
             spawnEnemies();
