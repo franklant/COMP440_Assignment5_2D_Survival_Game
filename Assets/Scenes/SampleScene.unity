@@ -3515,8 +3515,8 @@ MonoBehaviour:
   enemy: {fileID: 8787146456169844123, guid: d4df41ed2f7faac448b84a50c8d0c396, type: 3}
   spawnLocation: {fileID: 1989819951}
   minutesInADay: 5
-  currentTime: 220
-  daysElapsed: 1
+  currentTime: 0
+  daysElapsed: 0
   temperature: 20
   isMorning: 0
   isNoon: 0
