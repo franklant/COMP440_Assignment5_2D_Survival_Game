@@ -49,9 +49,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\PlayerScript.cs" />
+    <Compile Include="Assets\Scripts\CraftingTester.cs" />
     <Compile Include="Assets\Scripts\FollowPlayerScript.cs" />
+    <Compile Include="Assets\Item.cs" />
+    <Compile Include="Assets\Recipe.cs" />
+    <Compile Include="Assets\InventorySlot.cs" />
+    <Compile Include="Assets\Scripts\CraftingStationIdentifier.cs" />
     <Compile Include="Assets\Scripts\UIScript.cs" />
     <Compile Include="Assets\Scripts\LogicManagerScript.cs" />
+    <Compile Include="Assets\Scripts\Inventory.cs" />
+    <Compile Include="Assets\InventoryItem.cs" />
+    <Compile Include="Assets\Scripts\CraftingManager.cs" />
     <Compile Include="Assets\Scripts\LightSourceScript.cs" />
   </ItemGroup>
   <ItemGroup>

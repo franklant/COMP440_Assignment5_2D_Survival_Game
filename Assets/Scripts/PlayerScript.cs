@@ -28,7 +28,7 @@ public class PlayerScript : MonoBehaviour
         // --- NEW CODE ---
         // Find the CraftingManager in the scene so we can use it later.
         // This requires your GameManager object to be active.
-        craftingManager = FindObjectOfType<CraftingManager>();
+        craftingManager = FindFirstObjectByType<CraftingManager>();
         if (craftingManager == null)
         {
             Debug.LogError("Player could not find the CraftingManager in the scene!");
