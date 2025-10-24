@@ -66,10 +66,10 @@
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@317e801bb3aa\Runtime\PostProcessing\LensFlareOcclusionPermutation.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@317e801bb3aa\Runtime\Camera\CameraHistory.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@317e801bb3aa\Runtime\Utilities\TextureCurve.cs" />
-    <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@317e801bb3aa\Runtime\Debugging\DebugDisplaySettingsStats.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@317e801bb3aa\Runtime\LookDev\IDataProvider.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@317e801bb3aa\Runtime\RenderGraph\RenderGraph.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@317e801bb3aa\Runtime\Stripping\IRenderPipelineGraphicsSettingsStripper.cs" />
+    <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@317e801bb3aa\Runtime\Debugging\DebugDisplaySettingsStats.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@317e801bb3aa\Runtime\Stripping\RenderPipelineGraphicsSettingsStripper.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@317e801bb3aa\Runtime\Debugging\Prefabs\Scripts\DebugUIHandlerUIntField.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@317e801bb3aa\Runtime\CommandBuffers\IBaseCommandBuffer.cs" />

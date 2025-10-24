@@ -101,8 +101,8 @@
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.universal@1e1527b3a17b\Runtime\2D\Passes\PixelPerfectBackgroundPass.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.universal@1e1527b3a17b\Runtime\2D\UTess2D\Tessellator.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.universal@1e1527b3a17b\Runtime\2D\Light2DPoint.cs" />
-    <Compile Include="Library\PackageCache\com.unity.render-pipelines.universal@1e1527b3a17b\Runtime\2D\Shadows\ShadowProvider\ShadowShape2DProvider.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.universal@1e1527b3a17b\Runtime\2D\Passes\Utility\LightBatch.cs" />
+    <Compile Include="Library\PackageCache\com.unity.render-pipelines.universal@1e1527b3a17b\Runtime\2D\Shadows\ShadowProvider\ShadowShape2DProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Library\PackageCache\com.unity.render-pipelines.universal@1e1527b3a17b\Runtime\2D\Unity.RenderPipelines.Universal.2D.Runtime.asmdef" />

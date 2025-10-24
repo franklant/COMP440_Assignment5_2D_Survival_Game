@@ -137,9 +137,9 @@
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.universal@1e1527b3a17b\Editor\Converter\RenderPipelineConverterContainer.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.universal@1e1527b3a17b\Editor\AssetPostProcessors\SketchupMaterialDescriptionPostprocessor.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.universal@1e1527b3a17b\Editor\ShaderGraph\Targets\UniversalLitSubTarget.cs" />
-    <Compile Include="Library\PackageCache\com.unity.render-pipelines.universal@1e1527b3a17b\Editor\2D\ShapeEditor\GUIFramework\GenericDefaultControl.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.universal@1e1527b3a17b\Editor\ShaderScriptableStripper.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.universal@1e1527b3a17b\Editor\Overrides\ColorCurvesEditor.cs" />
+    <Compile Include="Library\PackageCache\com.unity.render-pipelines.universal@1e1527b3a17b\Editor\2D\ShapeEditor\GUIFramework\GenericDefaultControl.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.universal@1e1527b3a17b\Editor\Overrides\MotionBlurEditor.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.universal@1e1527b3a17b\Editor\2D\ShapeEditor\View\CreatePointAction.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.universal@1e1527b3a17b\Editor\VFXGraph\VFXURPLitQuadStripOutput.cs" />
