@@ -15,6 +15,10 @@ public class PlayerScript : MonoBehaviour
     private string direction = "down";          // keeps track of the players current direction
     private bool isAttacking = false;
     private bool isMoving = false;
+    private float attackCooldown = 0;
+    private bool attackCooldownActive = false;
+    public float attackCooldownDuration = 0.5f;
+
 
     // --- NEW VARIABLE ---
     // A reference to our CraftingManager so we can talk to it.
@@ -202,6 +206,19 @@ public class PlayerScript : MonoBehaviour
     // from there we can check what object the player has hit and perform the proper operation
     void handleAttacks()
     {
+        Debug.Log("ATTACK COOLDOWN ACTIVE? " + attackCooldownActive);
+        Debug.Log("CURRENT COOLDOWN TIME: " + attackCooldown);
+        // attack cool down to prevent taking the enemies health every frame
+        if (attackCooldown < attackCooldownDuration && attackCooldownActive)
+        {
+            attackCooldown += Time.deltaTime;
+        }
+        else
+        {
+            attackCooldown = 0;
+            attackCooldownActive = false;
+        }
+        
         // check collision from the left hit box
         if (leftHitBox.activeInHierarchy)
         {
@@ -211,12 +228,18 @@ public class PlayerScript : MonoBehaviour
             foreach (Collider2D c in results)
             {
                 // find a specifc collision object by name
-                Debug.Log(c.name);
+                //Debug.Log(c.name);
                 if (c.tag == "Enemy")
                 {
+                    // attack cooldown
+                    if (!attackCooldownActive)
+                    {
+                        Debug.Log("ENEMY HEALTH: " + c.gameObject.GetComponent<FollowPlayerScript>().health);
+                        c.gameObject.GetComponent<FollowPlayerScript>().health -= 1;
+                        attackCooldownActive = true;
+                    }
                     c.attachedRigidbody.linearVelocity = new Vector3(-1, 0, 0) * knockBack;
-                    c.gameObject.GetComponent<FollowPlayerScript>().health -= 1;
-                    return;
+                    break;
                 }
             }
         }
@@ -230,11 +253,16 @@ public class PlayerScript : MonoBehaviour
             foreach (Collider2D c in results)
             {
                 // find a specifc collision object by name
-                Debug.Log(c.name);
+                //Debug.Log(c.name);
                 if (c.tag == "Enemy")
                 {
+                    if (!attackCooldownActive)
+                    {
+                        Debug.Log("ENEMY HEALTH: " + c.gameObject.GetComponent<FollowPlayerScript>().health);
+                        c.gameObject.GetComponent<FollowPlayerScript>().health -= 1;
+                        attackCooldownActive = true;
+                    }
                     c.attachedRigidbody.linearVelocity = new Vector3(1, 0, 0) * knockBack;
-                    c.gameObject.GetComponent<FollowPlayerScript>().health -= 1;
                     return;
                 }
             }
@@ -249,11 +277,16 @@ public class PlayerScript : MonoBehaviour
             foreach (Collider2D c in results)
             {
                 // find a specifc collision object by name
-                Debug.Log(c.name);
+                //Debug.Log(c.name);
                 if (c.tag == "Enemy")
                 {
+                    if (!attackCooldownActive)
+                    {
+                        Debug.Log("ENEMY HEALTH: " + c.gameObject.GetComponent<FollowPlayerScript>().health);
+                        c.gameObject.GetComponent<FollowPlayerScript>().health -= 1;
+                        attackCooldownActive = true;
+                    }
                     c.attachedRigidbody.linearVelocity = new Vector3(0, 1, 0) * knockBack;
-                    c.gameObject.GetComponent<FollowPlayerScript>().health -= 1;
                     return;
                 }
             }
@@ -268,15 +301,22 @@ public class PlayerScript : MonoBehaviour
             foreach (Collider2D c in results)
             {
                 // find a specifc collision object by name
-                Debug.Log(c.name);
+                //Debug.Log(c.name);
                 if (c.tag == "Enemy")
                 {
+                    if (!attackCooldownActive)
+                    {
+                        Debug.Log("ENEMY HEALTH: " + c.gameObject.GetComponent<FollowPlayerScript>().health);
+                        c.gameObject.GetComponent<FollowPlayerScript>().health -= 1;
+                        attackCooldownActive = true;
+                    }
                     c.attachedRigidbody.linearVelocity = new Vector3(0, -1, 0) * knockBack;
-                    c.gameObject.GetComponent<FollowPlayerScript>().health -= 1;
                     return;
                 }
             }
         }
+
+        Debug.Log("\n\n\n\n");
     }
     
     // --- NEW SECTION FOR CRAFTING STATION DETECTION ---
