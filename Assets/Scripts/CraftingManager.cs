@@ -13,7 +13,7 @@ public class CraftingManager : MonoBehaviour
     void Start()
     {
         // Find the inventory in the scene
-        inventory = FindObjectOfType<Inventory>();
+        inventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<Inventory>();
         if (inventory == null)
         {
             Debug.LogError("CraftingManager could not find the Inventory in the scene!");

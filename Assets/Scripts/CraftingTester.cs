@@ -18,8 +18,8 @@ public class CraftingTester : MonoBehaviour
     void Start()
     {
         // Find the other manager scripts in the scene when the game starts.
-        inventory = FindObjectOfType<Inventory>();
-        craftingManager = FindObjectOfType<CraftingManager>();
+        inventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<Inventory>();
+        craftingManager = GameObject.FindGameObjectWithTag("Crafting").GetComponent<CraftingManager>();
     }
 
     void Update()
