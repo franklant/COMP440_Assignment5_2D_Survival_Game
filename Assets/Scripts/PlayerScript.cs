@@ -1,358 +1,263 @@
 using UnityEngine;
-using System.Collections.Generic;
+using System.Collections.Generic; // Needed for List in handleAttacks
 
 public class PlayerScript : MonoBehaviour
 {
+    // --- Variables from "His" Script (Includes Rigidbody & Speed) ---
     public Rigidbody2D myRigidBody;
     public Animator myAnimator;
-    public SpriteRenderer mySpriteRenderer;     // control the way the sprite faces the correct direction
+    public SpriteRenderer mySpriteRenderer;
     public GameObject leftHitBox;
     public GameObject rightHitBox;
     public GameObject upHitBox;
     public GameObject downHitBox;
     public float movementSpeed;
     public float knockBack = 7;
-    private string direction = "down";          // keeps track of the players current direction
+    private string direction = "down";
     private bool isAttacking = false;
     private bool isMoving = false;
     private float attackCooldown = 0;
     private bool attackCooldownActive = false;
-    public float attackCooldownDuration = 0.5f;
+    public float attackCooldownDuration = 0.5f; // Defaulted from "His" script, adjust if needed
 
-
-    // --- NEW VARIABLE ---
-    // A reference to our CraftingManager so we can talk to it.
+    // --- CraftingManager Reference (Present in Both) ---
     private CraftingManager craftingManager;
 
-
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    // --- Start() Method (Using Tag from "His" Script) ---
     void Start()
     {
-        // --- NEW CODE ---
-        // Find the CraftingManager in the scene so we can use it later.
-        // This requires your GameManager object to be active.
-        craftingManager = GameObject.FindGameObjectWithTag("Crafting").GetComponent<CraftingManager>();
+        // Find the CraftingManager using the tag "Crafting".
+        // Ensure the GameObject with CraftingManager has this tag assigned in the Inspector.
+        GameObject craftingManagerObject = GameObject.FindGameObjectWithTag("Crafting");
+        if (craftingManagerObject != null)
+        {
+            craftingManager = craftingManagerObject.GetComponent<CraftingManager>();
+        }
+        
+        // Error handling if not found
         if (craftingManager == null)
         {
-            Debug.LogError("Player could not find the CraftingManager in the scene!");
+            Debug.LogError("Player could not find the CraftingManager in the scene! Ensure an object has the 'Crafting' tag and the CraftingManager script.");
         }
     }
 
-    // Update is called once per frame
+    // --- Update() Method (From "His" Script) ---
     void Update()
     {
-        prototypeMovement();            // subject to change
-        handleMovementAnimations();     // move animation
-        handleFightAnimations();        // fight animation
-        handleAttacks();                // attack collision
+        prototypeMovement();        // Handles movement input and state
+        handleMovementAnimations(); // Handles animation based on movement state
+        handleFightAnimations();    // Handles animation based on attack state
+        handleAttacks();            // Handles hitbox activation and collision checks
     }
 
+    // --- prototypeMovement() Method (From "His" Script) ---
     void prototypeMovement()
     {
-        if (Input.GetKey(KeyCode.Space))
+        // Check for attack input first
+        if (Input.GetKey(KeyCode.Space)) // Assuming Space is attack
         {
             isMoving = false;
-            isAttacking = true;
+            isAttacking = true; // Set attack state
         }
         else
         {
-            isAttacking = false;
+            isAttacking = false; // Clear attack state if Space is not held
         }
 
-        // Horizontal Movement
-        if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) && !isAttacking)
+        // Only allow movement if not attacking
+        if (!isAttacking)
         {
-            isMoving = true;
-            direction = "left";
-            transform.position += (Vector3.left * movementSpeed) * Time.deltaTime;
-        }
-        else if ((Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) && !isAttacking)
-        {
-            isMoving = true;
-            direction = "right";
-            transform.position += (Vector3.right * movementSpeed) * Time.deltaTime;
-        }
-        else if ((Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) && !isAttacking)
-        {
-            isMoving = true;
-            direction = "up";
-            transform.position += (Vector3.up * movementSpeed) * Time.deltaTime;
-        }
-        else if ((Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) && !isAttacking)
-        {
-            isMoving = true;
-            direction = "down";
-            transform.position += (Vector3.down * movementSpeed) * Time.deltaTime;
-        }
-        else
-        {
-            isMoving = false;
+            Vector3 moveDirection = Vector3.zero;
+
+            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+            {
+                moveDirection = Vector3.left;
+                direction = "left";
+            }
+            else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+            {
+                moveDirection = Vector3.right;
+                direction = "right";
+            }
+            else if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+            {
+                moveDirection = Vector3.up;
+                direction = "up";
+            }
+            else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+            {
+                moveDirection = Vector3.down;
+                direction = "down";
+            }
+
+            // Apply movement and update state
+            if (moveDirection != Vector3.zero)
+            {
+                isMoving = true;
+                transform.position += (moveDirection * movementSpeed) * Time.deltaTime;
+            }
+            else
+            {
+                isMoving = false; // No movement keys pressed
+            }
+        } else {
+             isMoving = false; // Ensure not moving if attacking
         }
     }
 
-    // if the player is in it's moving state, the proper animations will play depending on the current move direction of the player
+    // --- handleMovementAnimations() Method (From "His" Script) ---
     void handleMovementAnimations()
     {
-        if (isMoving)
+        myAnimator.SetBool("isMoving", isMoving); // Directly use the state variable
+
+        if (isMoving) // Only update direction/flip if actually moving
         {
-            isAttacking = false;
-            myAnimator.SetBool("isMoving", true);
-            myAnimator.SetBool("isAttacking", false);
-
-            if (direction == "left" && isMoving)
-            {
-                myAnimator.SetBool("isLeftRight", true);
-                mySpriteRenderer.flipX = true;
-            }
-            else if (direction == "right" && isMoving)
-            {
-                myAnimator.SetBool("isLeftRight", true);
-                mySpriteRenderer.flipX = false;
-            }
-            else
-            {
-                myAnimator.SetBool("isLeftRight", false);
-            }
-
-            if (direction == "up" && isMoving)
-            {
-                myAnimator.SetBool("isUp", true);
-            }
-            else
-            {
-                myAnimator.SetBool("isUp", false);
-            }
-
-            if (direction == "down" && isMoving)
-            {
-                myAnimator.SetBool("isDown", true);
-            }
-            else
-            {
-                myAnimator.SetBool("isDown", false);
-            }
-        }
-        else
-        {
-            myAnimator.SetBool("isMoving", false);
-        }
-    }
-
-    // if the player is in the attacking state, the proper attack animation will play based on the current direction of the player
-    void handleFightAnimations()
-    {
-        if (isAttacking)
-        {
-            isMoving = false;
-            myAnimator.SetBool("isMoving", false);
-            myAnimator.SetBool("isAttacking", true);
-
+            // Simplified logic using the 'direction' variable
             if (direction == "left")
             {
                 myAnimator.SetBool("isLeftRight", true);
-                mySpriteRenderer.flipX = true;  // flip the sprite of the play
-
-                leftHitBox.SetActive(true);
-                rightHitBox.SetActive(false);
+                myAnimator.SetBool("isUp", false);
+                myAnimator.SetBool("isDown", false);
+                mySpriteRenderer.flipX = true;
             }
             else if (direction == "right")
             {
                 myAnimator.SetBool("isLeftRight", true);
+                myAnimator.SetBool("isUp", false);
+                myAnimator.SetBool("isDown", false);
                 mySpriteRenderer.flipX = false;
-
-                rightHitBox.SetActive(true);
-                leftHitBox.SetActive(false);
             }
-            else
+            else if (direction == "up")
             {
                 myAnimator.SetBool("isLeftRight", false);
-
-                rightHitBox.SetActive(false);
-                leftHitBox.SetActive(false);
-            }
-
-            if (direction == "up")
-            {
                 myAnimator.SetBool("isUp", true);
-                upHitBox.SetActive(true);
+                myAnimator.SetBool("isDown", false);
+                mySpriteRenderer.flipX = false; // Assuming default facing right/down
             }
-            else
+            else if (direction == "down")
             {
-                upHitBox.SetActive(false);
-            }
-
-            if (direction == "down")
-            {
+                myAnimator.SetBool("isLeftRight", false);
+                myAnimator.SetBool("isUp", false);
                 myAnimator.SetBool("isDown", true);
-                downHitBox.SetActive(true);
-            }
-            else
-            {
-                downHitBox.SetActive(false);
+                mySpriteRenderer.flipX = false; // Assuming default facing right/down
             }
         }
         else
         {
-            myAnimator.SetBool("isAttacking", false);
-            upHitBox.SetActive(false);
-            downHitBox.SetActive(false);
+             // Ensure directional states are false if not moving
+             myAnimator.SetBool("isLeftRight", false);
+             myAnimator.SetBool("isUp", false);
+             myAnimator.SetBool("isDown", false);
+        }
+    }
+
+    // --- handleFightAnimations() Method (From "His" Script) ---
+    void handleFightAnimations()
+    {
+         myAnimator.SetBool("isAttacking", isAttacking); // Use the state variable
+
+        // Only activate hitboxes and set specific attack anims if attacking
+        if (isAttacking)
+        {
+            // Update directional animations based on 'direction'
+            handleMovementAnimations(); // Reuse movement anim logic for direction
+
+            // Activate correct hitbox based on 'direction'
+            leftHitBox.SetActive(direction == "left");
+            rightHitBox.SetActive(direction == "right");
+            upHitBox.SetActive(direction == "up");
+            downHitBox.SetActive(direction == "down");
+        }
+        else // Ensure all hitboxes are off if not attacking
+        {
             leftHitBox.SetActive(false);
             rightHitBox.SetActive(false);
+            upHitBox.SetActive(false);
+            downHitBox.SetActive(false);
         }
     }
 
-    // when a directional hit box is active, the program will check over every object overlapping with the hit box
-    // from there we can check what object the player has hit and perform the proper operation
+    // --- handleAttacks() Method (From "His" Script) ---
     void handleAttacks()
     {
-        Debug.Log("ATTACK COOLDOWN ACTIVE? " + attackCooldownActive);
-        Debug.Log("CURRENT COOLDOWN TIME: " + attackCooldown);
-        // attack cool down to prevent taking the enemies health every frame
-        if (attackCooldown < attackCooldownDuration && attackCooldownActive)
+        // Cooldown Logic
+        if (attackCooldownActive)
         {
-            attackCooldown += Time.deltaTime;
-        }
-        else
-        {
-            attackCooldown = 0;
-            attackCooldownActive = false;
-        }
-        
-        // check collision from the left hit box
-        if (leftHitBox.activeInHierarchy)
-        {
-            List<Collider2D> results = new List<Collider2D>();
-            leftHitBox.GetComponent<Collider2D>().Overlap(results);
-
-            foreach (Collider2D c in results)
-            {
-                // find a specifc collision object by name
-                //Debug.Log(c.name);
-                if (c.tag == "Enemy")
-                {
-                    // attack cooldown
-                    if (!attackCooldownActive)
-                    {
-                        Debug.Log("ENEMY HEALTH: " + c.gameObject.GetComponent<FollowPlayerScript>().health);
-                        c.gameObject.GetComponent<FollowPlayerScript>().health -= 1;
-                        attackCooldownActive = true;
-                    }
-                    c.attachedRigidbody.linearVelocity = new Vector3(-1, 0, 0) * knockBack;
-                    break;
-                }
-            }
+             attackCooldown += Time.deltaTime;
+             if(attackCooldown >= attackCooldownDuration)
+             {
+                 attackCooldown = 0;
+                 attackCooldownActive = false;
+             }
         }
 
-        // check collision from the right hit box
-        if (rightHitBox.activeInHierarchy)
+        // Only check for hits if attacking and cooldown is not active
+        if (isAttacking && !attackCooldownActive)
         {
-            List<Collider2D> results = new List<Collider2D>();
-            rightHitBox.GetComponent<Collider2D>().Overlap(results);
-
-            foreach (Collider2D c in results)
-            {
-                // find a specifc collision object by name
-                //Debug.Log(c.name);
-                if (c.tag == "Enemy")
-                {
-                    if (!attackCooldownActive)
-                    {
-                        Debug.Log("ENEMY HEALTH: " + c.gameObject.GetComponent<FollowPlayerScript>().health);
-                        c.gameObject.GetComponent<FollowPlayerScript>().health -= 1;
-                        attackCooldownActive = true;
-                    }
-                    c.attachedRigidbody.linearVelocity = new Vector3(1, 0, 0) * knockBack;
-                    return;
-                }
-            }
+            CheckHitbox(leftHitBox, Vector3.left);
+            CheckHitbox(rightHitBox, Vector3.right);
+            CheckHitbox(upHitBox, Vector3.up);
+            CheckHitbox(downHitBox, Vector3.down);
         }
-
-        // check collision from the top hit box
-        if (upHitBox.activeInHierarchy)
-        {
-            List<Collider2D> results = new List<Collider2D>();
-            upHitBox.GetComponent<Collider2D>().Overlap(results);
-
-            foreach (Collider2D c in results)
-            {
-                // find a specifc collision object by name
-                //Debug.Log(c.name);
-                if (c.tag == "Enemy")
-                {
-                    if (!attackCooldownActive)
-                    {
-                        Debug.Log("ENEMY HEALTH: " + c.gameObject.GetComponent<FollowPlayerScript>().health);
-                        c.gameObject.GetComponent<FollowPlayerScript>().health -= 1;
-                        attackCooldownActive = true;
-                    }
-                    c.attachedRigidbody.linearVelocity = new Vector3(0, 1, 0) * knockBack;
-                    return;
-                }
-            }
-        }
-
-        // check collision from the bottom hit box
-        if (downHitBox.activeInHierarchy)
-        {
-            List<Collider2D> results = new List<Collider2D>();
-            downHitBox.GetComponent<Collider2D>().Overlap(results);
-
-            foreach (Collider2D c in results)
-            {
-                // find a specifc collision object by name
-                //Debug.Log(c.name);
-                if (c.tag == "Enemy")
-                {
-                    if (!attackCooldownActive)
-                    {
-                        Debug.Log("ENEMY HEALTH: " + c.gameObject.GetComponent<FollowPlayerScript>().health);
-                        c.gameObject.GetComponent<FollowPlayerScript>().health -= 1;
-                        attackCooldownActive = true;
-                    }
-                    c.attachedRigidbody.linearVelocity = new Vector3(0, -1, 0) * knockBack;
-                    return;
-                }
-            }
-        }
-
-        Debug.Log("\n\n\n\n");
     }
-    
-    // --- NEW SECTION FOR CRAFTING STATION DETECTION ---
 
-    /// <summary>
-    /// This is a built-in Unity function that is called automatically
-    /// when this object's collider enters another collider marked as a "Trigger".
-    /// </summary>
+    // --- Helper Method for handleAttacks() (Extracted from "His" Script) ---
+    void CheckHitbox(GameObject hitbox, Vector3 knockbackDirection)
+    {
+         if (!hitbox.activeInHierarchy) return; // Don't check inactive hitboxes
+
+         List<Collider2D> results = new List<Collider2D>();
+         // Correct way to get overlaps for 2D Physics
+         ContactFilter2D filter = new ContactFilter2D().NoFilter(); // Or configure filter if needed
+         int hitCount = hitbox.GetComponent<Collider2D>().Overlap(filter, results);
+
+         if (hitCount > 0)
+         {
+             foreach (Collider2D c in results)
+             {
+                 if (c.CompareTag("Enemy")) // Use CompareTag for efficiency
+                 {
+                     FollowPlayerScript enemyScript = c.gameObject.GetComponent<FollowPlayerScript>();
+                     if (enemyScript != null)
+                     {
+                         Debug.Log("ENEMY HEALTH: " + enemyScript.health);
+                         enemyScript.health -= 1; // Assuming damage is 1
+                         attackCooldownActive = true; // Start cooldown
+                         
+                         // Apply knockback if enemy has Rigidbody2D
+                          Rigidbody2D enemyRb = c.attachedRigidbody;
+                          if (enemyRb != null)
+                          {
+                               enemyRb.linearVelocity = knockbackDirection * knockBack;
+                          }
+                         return; // Only hit one enemy per swing in this direction
+                     }
+                 }
+                 // Add checks for other tags here (e.g., "ResourceNode") if needed
+             }
+         }
+    }
+
+
+    // --- Crafting Station Detection (Present in Both) ---
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // Check if the object we collided with has a CraftingStationIdentifier script on it.
         CraftingStationIdentifier station = other.GetComponent<CraftingStationIdentifier>();
-
-        // If it does, it's a crafting station!
-        if (station != null)
+        if (station != null && craftingManager != null)
         {
             Debug.Log("Entered crafting station area: " + station.stationType);
-            // Tell the CraftingManager what our current station is.
             craftingManager.SetCurrentCraftingStation(station.stationType);
         }
     }
 
-    /// <summary>
-    /// This is a built-in Unity function that is called automatically
-    /// when this object's collider leaves a Trigger zone.
-    /// </summary>
     private void OnTriggerExit2D(Collider2D other)
     {
-        // Check if the object we are leaving is a crafting station.
         CraftingStationIdentifier station = other.GetComponent<CraftingStationIdentifier>();
-
-        // If it is...
-        if (station != null)
+        if (station != null && craftingManager != null)
         {
             Debug.Log("Left crafting station area: " + station.stationType);
-            // Tell the CraftingManager we are no longer at a station.
+            // Only reset if leaving the *current* station (prevents issues if overlapping triggers)
+            // if (craftingManager.GetCurrentStation() == station.stationType) // Assumes GetCurrentStation() exists
             craftingManager.SetCurrentCraftingStation(CraftingStation.None);
         }
     }
