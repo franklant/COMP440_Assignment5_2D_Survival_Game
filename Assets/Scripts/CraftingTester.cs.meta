@@ -1,2 +1,16 @@
 fileFormatVersion: 2
 guid: d81b43993b9844c858e5926acaf92730
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - craftingManager: {instanceID: 0}
+  - inventoryManager: {instanceID: 0}
+  - woodenAxeRecipe: {fileID: 11400000, guid: 0e1da721296124ecfa3cccc27821376d, type: 2}
+  - woodItem: {fileID: 11400000, guid: e2b6652c999444244b910ea7963e6e8c, type: 2}
+  - stoneItem: {fileID: 11400000, guid: c466f763d498846099a123bcbd1a0a9c, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
