@@ -206,8 +206,8 @@ public class PlayerScript : MonoBehaviour
     // from there we can check what object the player has hit and perform the proper operation
     void handleAttacks()
     {
-        Debug.Log("ATTACK COOLDOWN ACTIVE? " + attackCooldownActive);
-        Debug.Log("CURRENT COOLDOWN TIME: " + attackCooldown);
+        //Debug.Log("ATTACK COOLDOWN ACTIVE? " + attackCooldownActive);
+        //Debug.Log("CURRENT COOLDOWN TIME: " + attackCooldown);
         // attack cool down to prevent taking the enemies health every frame
         if (attackCooldown < attackCooldownDuration && attackCooldownActive)
         {
@@ -234,7 +234,7 @@ public class PlayerScript : MonoBehaviour
                     // attack cooldown
                     if (!attackCooldownActive)
                     {
-                        Debug.Log("ENEMY HEALTH: " + c.gameObject.GetComponent<FollowPlayerScript>().health);
+                        //Debug.Log("ENEMY HEALTH: " + c.gameObject.GetComponent<FollowPlayerScript>().health);
                         c.gameObject.GetComponent<FollowPlayerScript>().health -= 1;
                         attackCooldownActive = true;
                     }
@@ -258,7 +258,7 @@ public class PlayerScript : MonoBehaviour
                 {
                     if (!attackCooldownActive)
                     {
-                        Debug.Log("ENEMY HEALTH: " + c.gameObject.GetComponent<FollowPlayerScript>().health);
+                        //Debug.Log("ENEMY HEALTH: " + c.gameObject.GetComponent<FollowPlayerScript>().health);
                         c.gameObject.GetComponent<FollowPlayerScript>().health -= 1;
                         attackCooldownActive = true;
                     }
@@ -282,7 +282,7 @@ public class PlayerScript : MonoBehaviour
                 {
                     if (!attackCooldownActive)
                     {
-                        Debug.Log("ENEMY HEALTH: " + c.gameObject.GetComponent<FollowPlayerScript>().health);
+                        //Debug.Log("ENEMY HEALTH: " + c.gameObject.GetComponent<FollowPlayerScript>().health);
                         c.gameObject.GetComponent<FollowPlayerScript>().health -= 1;
                         attackCooldownActive = true;
                     }
@@ -306,7 +306,7 @@ public class PlayerScript : MonoBehaviour
                 {
                     if (!attackCooldownActive)
                     {
-                        Debug.Log("ENEMY HEALTH: " + c.gameObject.GetComponent<FollowPlayerScript>().health);
+                        //Debug.Log("ENEMY HEALTH: " + c.gameObject.GetComponent<FollowPlayerScript>().health);
                         c.gameObject.GetComponent<FollowPlayerScript>().health -= 1;
                         attackCooldownActive = true;
                     }
@@ -316,7 +316,7 @@ public class PlayerScript : MonoBehaviour
             }
         }
 
-        Debug.Log("\n\n\n\n");
+        //Debug.Log("\n\n\n\n");
     }
     
     // --- NEW SECTION FOR CRAFTING STATION DETECTION ---
