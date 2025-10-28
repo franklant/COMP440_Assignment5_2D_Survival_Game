@@ -1,7 +1,5 @@
 using UnityEngine;
 
-// NOTE: Removed UnityEngine.AI since we are not using NavMeshAgent in 2D.
-
 public class FollowPlayerScript : MonoBehaviour
 {
     private Transform target;
@@ -18,22 +16,32 @@ public class FollowPlayerScript : MonoBehaviour
         mySpriteRenderer.flipX = true;
         target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
     }
+    
+    // --- ⭐ NEW FUNCTION ADDED HERE ---
+    /// <summary>
+    /// Public function to allow other scripts to deal damage to this enemy.
+    /// </summary>
+    /// <param name="damageAmount">The amount of health to subtract.</param>
+    public void TakeDamage(float damageAmount)
+    {
+        health -= damageAmount;
+        Debug.Log($"Enemy took {damageAmount} damage, {health} health remaining.");
+        
+        // You could also set isAttacked = true here if you want
+    }
+    // ---------------------------------
+
     void Update()
     {
         float distanceToTarget = (transform.position - target.transform.position).magnitude;
         Vector3 distanceToTargetRaw = (transform.position - target.transform.position);
-        // Debug.Log("Distance: " + distanceToTargetRaw);
-
+        
         if (distanceToTarget <= detectionRadius && distanceToTarget > stoppingDistance && !isAttacked)
         {
             Vector3 direction = (transform.position - target.transform.position).normalized;
-
             myRigidBody.linearVelocity = -direction * movementSpeed;
 
-            // 4. Optional: Rotate to face target (2D rotation)
-            // LookAt is generally not used in 2D. We calculate the angle instead:
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            // Debug.Log("Angle" + angle.ToString());
             transform.rotation = Quaternion.Euler(0, 0, angle);
 
             if (angle >= 90 || angle <= -90)
@@ -50,6 +58,7 @@ public class FollowPlayerScript : MonoBehaviour
             myRigidBody.linearVelocity = Vector3.zero;
         }
         
+        // This existing code will automatically handle death
         if (health <= 0)
         {
             Destroy(gameObject);
