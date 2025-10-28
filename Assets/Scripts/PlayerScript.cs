@@ -3,7 +3,7 @@ using System.Collections.Generic; // Needed for List in handleAttacks
 
 public class PlayerScript : MonoBehaviour
 {
-    // --- Variables from "His" Script (Includes Rigidbody & Speed) ---
+    // --- (Your existing variables) ---
     public Rigidbody2D myRigidBody;
     public Animator myAnimator;
     public SpriteRenderer mySpriteRenderer;
@@ -23,14 +23,17 @@ public class PlayerScript : MonoBehaviour
     private CraftingManager craftingManager;
     
     [Header("Item Holding")]
-    public SpriteRenderer heldItemSprite; // Drag your 'HeldItem' child object's SpriteRenderer here
-
-    // --- ⭐ NEW VARIABLE ADDED HERE ---
-    // Stores the damage of the currently held item. Defaults to 1 (fist).
+    public SpriteRenderer heldItemSprite; 
     private float currentItemDamage = 1f;
+
+    // --- ⭐ NEW VARIABLES ADDED HERE ---
+    [Header("Component References")]
+    [Tooltip("Drag your InventoryManager object here")]
+    public InventoryManager inventoryManager; 
+    [Tooltip("Drag your HungerBar object here")]
+    public HungerBar hungerBar;               
     // ---------------------------------
 
-    // --- Start() Method ---
     void Start()
     {
         GameObject craftingManagerObject = GameObject.FindGameObjectWithTag("Crafting");
@@ -42,18 +45,63 @@ public class PlayerScript : MonoBehaviour
         {
             Debug.LogError("Player could not find the CraftingManager!");
         }
+
+        // --- ⭐ ADDED: Safety checks for new components ---
+        if (inventoryManager == null)
+        {
+            // Try to find it if not assigned
+            inventoryManager = FindFirstObjectByType<InventoryManager>();
+            if (inventoryManager == null)
+                Debug.LogError("InventoryManager is not assigned on Player and could not be found!");
+        }
+        if (hungerBar == null)
+        {
+            // Try to find it if not assigned
+            hungerBar = FindFirstObjectByType<HungerBar>();
+            if (hungerBar == null)
+                Debug.LogError("HungerBar is not assigned on Player and could not be found!");
+        }
+        // ------------------------------------------------
     }
 
-    // --- Update() Method ---
     void Update()
     {
         prototypeMovement();        
         handleMovementAnimations(); 
         handleFightAnimations();    
         handleAttacks();            
+
+        // --- ⭐ NEW "EAT" LOGIC ADDED HERE ---
+        // Check for right mouse click (Mouse1) to eat
+        if (Input.GetKeyDown(KeyCode.Mouse1)) 
+        {
+            HandleEating();
+        }
+        // ------------------------------------
     }
 
-    // --- prototypeMovement() Method ---
+    // --- ⭐ NEW FUNCTION ADDED HERE ---
+    private void HandleEating()
+    {
+        if (inventoryManager == null || hungerBar == null) return;
+
+        // Get the currently selected item
+        Item selectedItem = inventoryManager.GetSelectedItem(false); // false = don't use/consume item yet
+
+        // Check if we actually got an item and if that item is food
+        if (selectedItem != null && selectedItem.isFood)
+        {
+            // It's food! Now tell the inventory to consume one
+            inventoryManager.GetSelectedItem(true); // true = use/consume one item
+            
+            // Call the HungerBar's EatFood function
+            hungerBar.EatFood(selectedItem.hungerRestore, selectedItem.healthRestore);
+        }
+    }
+    // ---------------------------------
+
+    // --- (Rest of your script: prototypeMovement, handleMovementAnimations, etc.) ---
+    
     void prototypeMovement()
     {
         // Check for attack input first
@@ -107,15 +155,13 @@ public class PlayerScript : MonoBehaviour
              isMoving = false; // Ensure not moving if attacking
         }
     }
-
-    // --- handleMovementAnimations() Method ---
+    
     void handleMovementAnimations()
     {
-        myAnimator.SetBool("isMoving", isMoving); // Directly use the state variable
+        myAnimator.SetBool("isMoving", isMoving); 
 
-        if (isMoving) // Only update direction/flip if actually moving
+        if (isMoving) 
         {
-            // Simplified logic using the 'direction' variable
             if (direction == "left")
             {
                 myAnimator.SetBool("isLeftRight", true);
@@ -147,28 +193,26 @@ public class PlayerScript : MonoBehaviour
         }
         else
         {
-             // Ensure directional states are false if not moving
              myAnimator.SetBool("isLeftRight", false);
              myAnimator.SetBool("isUp", false);
              myAnimator.SetBool("isDown", false);
         }
     }
-
-    // --- handleFightAnimations() Method ---
+    
     void handleFightAnimations()
     {
-         myAnimator.SetBool("isAttacking", isAttacking); // Use the state variable
+         myAnimator.SetBool("isAttacking", isAttacking); 
 
         if (isAttacking)
         {
-            handleMovementAnimations(); // Reuse movement anim logic for direction
+            handleMovementAnimations(); 
 
             leftHitBox.SetActive(direction == "left");
             rightHitBox.SetActive(direction == "right");
             upHitBox.SetActive(direction == "up");
             downHitBox.SetActive(direction == "down");
         }
-        else // Ensure all hitboxes are off if not attacking
+        else 
         {
             leftHitBox.SetActive(false);
             rightHitBox.SetActive(false);
@@ -176,11 +220,9 @@ public class PlayerScript : MonoBehaviour
             downHitBox.SetActive(false);
         }
     }
-
-    // --- handleAttacks() Method ---
+    
     void handleAttacks()
     {
-        // Cooldown Logic
         if (attackCooldownActive)
         {
              attackCooldown += Time.deltaTime;
@@ -191,7 +233,6 @@ public class PlayerScript : MonoBehaviour
              }
         }
 
-        // Only check for hits if attacking and cooldown is not active
         if (isAttacking && !attackCooldownActive)
         {
             CheckHitbox(leftHitBox, Vector3.left);
@@ -200,16 +241,13 @@ public class PlayerScript : MonoBehaviour
             CheckHitbox(downHitBox, Vector3.down);
         }
     }
-
-    // --- CheckHitbox() Method ---
+    
     void CheckHitbox(GameObject hitbox, Vector3 knockbackDirection)
     {
          if (!hitbox.activeInHierarchy) return; 
 
          List<Collider2D> results = new List<Collider2D>();
-         // --- ⭐ FIXED OBSOLETE WARNING HERE ---
          ContactFilter2D filter = ContactFilter2D.noFilter; 
-         // -------------------------------------
          int hitCount = hitbox.GetComponent<Collider2D>().Overlap(filter, results);
 
          if (hitCount > 0)
@@ -236,7 +274,6 @@ public class PlayerScript : MonoBehaviour
          }
     }
     
-    // --- OnTriggerEnter2D() Method ---
     private void OnTriggerEnter2D(Collider2D other)
     {
         CraftingStationIdentifier station = other.GetComponent<CraftingStationIdentifier>();
@@ -245,8 +282,7 @@ public class PlayerScript : MonoBehaviour
             craftingManager.SetCurrentCraftingStation(station.stationType);
         }
     }
-
-    // --- OnTriggerExit2D() Method ---
+    
     private void OnTriggerExit2D(Collider2D other)
     {
         CraftingStationIdentifier station = other.GetComponent<CraftingStationIdentifier>();
@@ -255,8 +291,7 @@ public class PlayerScript : MonoBehaviour
             craftingManager.SetCurrentCraftingStation(CraftingStation.None);
         }
     }
-
-    // --- UpdateHeldItem() Method ---
+    
     public void UpdateHeldItem(Sprite spriteToShow)
     {
         if (heldItemSprite == null)
@@ -277,10 +312,8 @@ public class PlayerScript : MonoBehaviour
         }
     }
     
-    // --- UpdateCurrentDamage() Method ---
     public void UpdateCurrentDamage(float newDamage)
     {
-        // If the item has 0 or invalid damage, default to 1 (fist)
         if (newDamage <= 0)
         {
             currentItemDamage = 1f;
