@@ -199,7 +199,7 @@ public class InventoryManager : MonoBehaviour
     private void NotifyCraftingUI()
     {
         Debug.Log("Attempting to notify CraftingUI...");
-        CraftingUI craftingUIInstance = FindObjectOfType<CraftingUI>(); // Find it first
+        CraftingUI craftingUIInstance = FindFirstObjectByType<CraftingUI>(); // Find it first
         if (craftingUIInstance != null)
         {
             Debug.Log("<color=yellow>Found CraftingUI instance! Calling UpdateAllButtons...</color>");

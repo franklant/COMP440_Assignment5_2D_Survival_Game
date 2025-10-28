@@ -28,11 +28,7 @@ public class PlayerScript : MonoBehaviour
     {
         // Find the CraftingManager using the tag "Crafting".
         // Ensure the GameObject with CraftingManager has this tag assigned in the Inspector.
-        GameObject craftingManagerObject = GameObject.FindGameObjectWithTag("Crafting");
-        if (craftingManagerObject != null)
-        {
-            craftingManager = craftingManagerObject.GetComponent<CraftingManager>();
-        }
+        craftingManager = FindFirstObjectByType<CraftingManager>();
         
         // Error handling if not found
         if (craftingManager == null)
@@ -142,13 +138,6 @@ public class PlayerScript : MonoBehaviour
                 mySpriteRenderer.flipX = false; // Assuming default facing right/down
             }
         }
-        else
-        {
-             // Ensure directional states are false if not moving
-             myAnimator.SetBool("isLeftRight", false);
-             myAnimator.SetBool("isUp", false);
-             myAnimator.SetBool("isDown", false);
-        }
     }
 
     // --- handleFightAnimations() Method (From "His" Script) ---
@@ -208,7 +197,7 @@ public class PlayerScript : MonoBehaviour
 
          List<Collider2D> results = new List<Collider2D>();
          // Correct way to get overlaps for 2D Physics
-         ContactFilter2D filter = new ContactFilter2D().NoFilter(); // Or configure filter if needed
+         ContactFilter2D filter = ContactFilter2D.noFilter; // Or configure filter if needed
          int hitCount = hitbox.GetComponent<Collider2D>().Overlap(filter, results);
 
          if (hitCount > 0)
@@ -220,17 +209,19 @@ public class PlayerScript : MonoBehaviour
                      FollowPlayerScript enemyScript = c.gameObject.GetComponent<FollowPlayerScript>();
                      if (enemyScript != null)
                      {
-                         Debug.Log("ENEMY HEALTH: " + enemyScript.health);
-                         enemyScript.health -= 1; // Assuming damage is 1
-                         attackCooldownActive = true; // Start cooldown
-                         
-                         // Apply knockback if enemy has Rigidbody2D
-                          Rigidbody2D enemyRb = c.attachedRigidbody;
-                          if (enemyRb != null)
-                          {
-                               enemyRb.linearVelocity = knockbackDirection * knockBack;
-                          }
-                         return; // Only hit one enemy per swing in this direction
+                        Debug.Log("ENEMY HEALTH: " + enemyScript.health);
+                        enemyScript.health -= 1; // Assuming damage is 1
+                        
+                        // Apply knockback if enemy has Rigidbody2D
+                        Rigidbody2D enemyRb = c.attachedRigidbody;
+
+                        if (enemyRb != null)
+                        {
+                            Debug.Log("HEY");
+                            enemyRb.linearVelocity = knockbackDirection * knockBack;
+                            attackCooldownActive = true; // Start cooldown
+                        }
+                        break; // Only hit one enemy per swing in this direction
                      }
                  }
                  // Add checks for other tags here (e.g., "ResourceNode") if needed
