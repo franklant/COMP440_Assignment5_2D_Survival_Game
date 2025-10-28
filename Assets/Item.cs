@@ -1,7 +1,6 @@
 using UnityEngine;
-using UnityEngine.Tilemaps; // Added for TileBase functionality
+using UnityEngine.Tilemaps;
 
-// These enums define the different categories for your items
 public enum ItemType
 {
     BuildingBlock,
@@ -20,11 +19,17 @@ public class Item : ScriptableObject
     [Header("General Info")]
     public string itemName;
     public Sprite itemIcon;
+    public Sprite heldSprite; 
 
     [Header("Gameplay Properties")]
     public ItemType type;
     public ActionType actionType;
-    public TileBase tile; // The tile to place if it's a building block
+    public TileBase tile; 
+    
+    // --- ⭐ NEW FIELD ADDED HERE ---
+    [Tooltip("Default damage is 1 (fist). Only applies if ActionType is Attack.")]
+    public float damage = 1f; 
+    // -----------------------------
     
     [Header("Inventory Properties")]
     public bool stackable = true;

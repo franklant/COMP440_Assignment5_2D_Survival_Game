@@ -8,30 +8,24 @@ public class InventoryManager : MonoBehaviour
     public GameObject inventoryItemPrefab;
     public int maxStackSize = 5;
 
+    [Tooltip("Drag your Player GameObject here. Must have the PlayerScript component.")]
+    public PlayerScript player; // Assign your Player (with PlayerScript) in the Inspector
+
     [Header("Runtime Info")]
-    // --- UPDATED: Start at -1 to match screenshot logic ---
     public int selectedSlot = -1;
 
-    // --- ADDED: Start() method to select initial slot ---
     void Start()
     {
-        // Select the initial slot (slot 0) when the game starts
         ChangeSelectedSlot(0);
     }
 
-    // --- UPDATED: Replicated Update logic from screenshot ---
     void Update()
     {
-        // Check if any key was pressed this frame
         if (Input.inputString != null && Input.inputString.Length > 0)
         {
-            // Try to parse the first character of the input as a number
             bool isNumber = int.TryParse(Input.inputString[0].ToString(), out int number);
-
-            // Check if it was a number between 1 and 7 (inclusive)
-            if (isNumber && number > 0 && number < 8) // Checks for keys 1, 2, 3, 4, 5, 6, 7
+            if (isNumber && number > 0 && number < 8)
             {
-                // Convert the number pressed (1-7) to a zero-based index (0-6)
                 ChangeSelectedSlot(number - 1);
             }
         }
@@ -43,7 +37,7 @@ public class InventoryManager : MonoBehaviour
     /// </summary>
     public bool AddItem(Item item)
     {
-        // First, try to find a slot that already has this item and can be stacked
+        // First, try to find a stackable slot
         foreach (InventorySlot slot in inventorySlots)
         {
             InventoryItem itemInSlot = slot.GetComponentInChildren<InventoryItem>();
@@ -51,13 +45,12 @@ public class InventoryManager : MonoBehaviour
             {
                 itemInSlot.count++;
                 itemInSlot.RefreshCount();
-                Debug.Log($"Stacked {item.itemName} in an existing slot (now {itemInSlot.count}).");
                 NotifyCraftingUI();
-                return true;
+                return true; // Item was stacked
             }
         }
 
-        // If no stackable slot was found, find the first empty slot
+        // If no stackable slot, find an empty slot
         foreach (InventorySlot slot in inventorySlots)
         {
             if (slot.transform.childCount == 0)
@@ -65,7 +58,7 @@ public class InventoryManager : MonoBehaviour
                 if (inventoryItemPrefab == null)
                 {
                      Debug.LogError("InventoryItem Prefab is NOT ASSIGNED on InventoryManager!");
-                     return false;
+                     return false; // Failed to add
                 }
                 GameObject newItemGO = Instantiate(inventoryItemPrefab, slot.transform);
                 InventoryItem inventoryItem = newItemGO.GetComponent<InventoryItem>();
@@ -73,17 +66,16 @@ public class InventoryManager : MonoBehaviour
                 {
                     Debug.LogError("Instantiated prefab is MISSING the InventoryItem script!", newItemGO);
                     Destroy(newItemGO);
-                    return false;
+                    return false; // Failed to add
                 }
                 inventoryItem.InitializeItem(item);
-                Debug.Log($"Placed {item.itemName} in a new slot.");
                 NotifyCraftingUI();
-                return true;
+                return true; // Item was added to new slot
             }
         }
 
         Debug.LogWarning("Failed to add item. Inventory is full!");
-        return false;
+        return false; // <-- FIX: Default return if no slots are found
     }
 
     /// <summary>
@@ -95,7 +87,7 @@ public class InventoryManager : MonoBehaviour
         if (!HasItem(item, quantityToRemove))
         {
             Debug.LogWarning($"Failed to remove {item.itemName}; not enough in inventory.");
-            return false;
+            return false; // Not enough items
         }
 
         int quantityLeftToRemove = quantityToRemove;
@@ -121,7 +113,7 @@ public class InventoryManager : MonoBehaviour
 
         Debug.Log($"Successfully removed {quantityToRemove} {item.itemName} from inventory.");
         NotifyCraftingUI();
-        return true;
+        return true; // <-- FIX: Default return for success
     }
 
     /// <summary>
@@ -138,31 +130,70 @@ public class InventoryManager : MonoBehaviour
                 countFound += itemInSlot.count;
             }
         }
-        return countFound >= requiredQuantity;
+        return countFound >= requiredQuantity; // <-- FIX: This line is correct, it's outside the loop.
     }
 
     /// <summary>
-    /// Changes the currently selected inventory slot and updates visuals (Replicated Logic).
+    /// Changes the currently selected inventory slot and updates visuals.
     /// </summary>
     public void ChangeSelectedSlot(int newValue)
     {
-        // Make sure the new value is within the bounds of your hotbar
         if (newValue < 0 || newValue >= inventorySlots.Count)
         {
-            return; // Invalid slot index
+            return; 
         }
 
-        // --- UPDATED: Replicated logic from screenshot ---
-        // Deselect the previously selected slot (visually), only if it was valid (>= 0)
-        if (selectedSlot >= 0 && selectedSlot < inventorySlots.Count) // Add safety check
+        if (selectedSlot >= 0 && selectedSlot < inventorySlots.Count)
             inventorySlots[selectedSlot].Deselect();
 
-        // Update the index
         selectedSlot = newValue;
 
-        // Select the new slot (visually)
-        if (selectedSlot >= 0 && selectedSlot < inventorySlots.Count) // Add safety check
+        if (selectedSlot >= 0 && selectedSlot < inventorySlots.Count)
             inventorySlots[selectedSlot].Select();
+            
+        UpdatePlayerHeldItem();
+    }
+
+    /// <summary>
+    /// Tells the PlayerScript to update its held item sprite and damage.
+    /// </summary>
+    private void UpdatePlayerHeldItem()
+    {
+        if (player == null)
+        {
+            if (Time.frameCount < 10)
+                 Debug.LogError("Player is not assigned in the InventoryManager!");
+            return;
+        }
+        
+        if (selectedSlot < 0 || selectedSlot >= inventorySlots.Count)
+        {
+            player.UpdateHeldItem(null);
+            player.UpdateCurrentDamage(1f); // Default fist damage
+            return;
+        }
+
+        InventoryItem itemInSlot = inventorySlots[selectedSlot].GetComponentInChildren<InventoryItem>();
+
+        if (itemInSlot != null && itemInSlot.itemData != null)
+        {
+            player.UpdateHeldItem(itemInSlot.itemData.heldSprite);
+
+            // Check the item's ActionType. Only apply damage if it's an "Attack" item.
+            if (itemInSlot.itemData.actionType == ActionType.Attack)
+            {
+                player.UpdateCurrentDamage(itemInSlot.itemData.damage);
+            }
+            else
+            {
+                player.UpdateCurrentDamage(1f); // Default damage for non-attack items
+            }
+        }
+        else
+        {
+            player.UpdateHeldItem(null);
+            player.UpdateCurrentDamage(1f); // Default fist damage for empty slot
+        }
     }
 
 
@@ -188,9 +219,9 @@ public class InventoryManager : MonoBehaviour
                 }
                 NotifyCraftingUI();
             }
-            return itemData;
+            return itemData; // Item was found
         }
-        return null;
+        return null; // <-- FIX: Default return if slot is empty
     }
 
     /// <summary>
@@ -198,18 +229,11 @@ public class InventoryManager : MonoBehaviour
     /// </summary>
     private void NotifyCraftingUI()
     {
-        Debug.Log("Attempting to notify CraftingUI...");
-        CraftingUI craftingUIInstance = FindObjectOfType<CraftingUI>(); // Find it first
+        // FIX FOR WARNING: Use FindFirstObjectByType instead of FindObjectOfType
+        CraftingUI craftingUIInstance = FindFirstObjectByType<CraftingUI>(); 
         if (craftingUIInstance != null)
         {
-            Debug.Log("<color=yellow>Found CraftingUI instance! Calling UpdateAllButtons...</color>");
-            craftingUIInstance.UpdateAllButtons(); // Call the method
-        }
-        else
-        {
-            // Don't log error if crafting UI might not always be active
-            // Debug.LogError("Could not find active CraftingUI component in the scene!");
+            craftingUIInstance.UpdateAllButtons();
         }
     }
 }
-
