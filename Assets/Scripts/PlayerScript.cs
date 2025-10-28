@@ -252,7 +252,9 @@ public class PlayerScript : MonoBehaviour
          if (!hitbox.activeInHierarchy) return; 
 
          List<Collider2D> results = new List<Collider2D>();
+         // --- ⭐ FIXED OBSOLETE WARNING HERE ---
          ContactFilter2D filter = ContactFilter2D.noFilter; 
+         // -------------------------------------
          int hitCount = hitbox.GetComponent<Collider2D>().Overlap(filter, results);
 
          if (hitCount > 0)
