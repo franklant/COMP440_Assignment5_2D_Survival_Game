@@ -20,8 +20,6 @@ public class CraftingUI : MonoBehaviour
     {
         // Safety checks for required references
         // Removed check for slotContainer
-        craftingManager = FindFirstObjectByType<CraftingManager>();
-        
         if (craftingManager == null)
         {
              Debug.LogError("Crafting Manager is NOT assigned on CraftingUI!", this.gameObject);
