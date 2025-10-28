@@ -58,8 +58,8 @@
     <Compile Include="Library\PackageCache\com.unity.ugui@e375ff18e90f\Editor\TMP\TMPro_ContextMenus.cs" />
     <Compile Include="Library\PackageCache\com.unity.ugui@e375ff18e90f\Editor\TMP\TMPro_EditorShaderUtilities.cs" />
     <Compile Include="Library\PackageCache\com.unity.ugui@e375ff18e90f\Editor\TMP\TMP_SubMeshUI_Editor.cs" />
-    <Compile Include="Library\PackageCache\com.unity.ugui@e375ff18e90f\Editor\TMP\TMP_InputFieldEditor.cs" />
     <Compile Include="Library\PackageCache\com.unity.ugui@e375ff18e90f\Editor\TMP\TMP_SpriteAssetEditor.cs" />
+    <Compile Include="Library\PackageCache\com.unity.ugui@e375ff18e90f\Editor\TMP\TMP_InputFieldEditor.cs" />
     <Compile Include="Library\PackageCache\com.unity.ugui@e375ff18e90f\Editor\TMP\TMP_StyleAssetMenu.cs" />
     <Compile Include="Library\PackageCache\com.unity.ugui@e375ff18e90f\Editor\TMP\HDRP\TMP_SDF_HDRPUnlitShaderGUI.cs" />
     <Compile Include="Library\PackageCache\com.unity.ugui@e375ff18e90f\Editor\TMP\TMP_BaseShaderGUI.cs" />

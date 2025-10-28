@@ -107,7 +107,7 @@ public class MoveAndFollowPlayerScript : MonoBehaviour
         direction = (endPoint - transform.position).normalized;
         float distance = Vector3.Distance(endPoint, transform.position);
 
-        Debug.Log(direction);
+        //Debug.Log(direction);
 
         RaycastHit2D hit = Physics2D.Raycast(transform.position, direction);
 
@@ -173,12 +173,11 @@ public class MoveAndFollowPlayerScript : MonoBehaviour
         }
     }
 
-    void OnCollisionStay2D(Collision2D collision)
+    void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.collider.tag == "Obstacles")
         {
-            currentState = scatterState;
-            scatter();
+            direction = -direction;
         }
     }
 }

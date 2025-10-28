@@ -183,15 +183,15 @@ public class PlayerScript : MonoBehaviour
         // Only check for hits if attacking and cooldown is not active
         if (isAttacking && !attackCooldownActive)
         {
-            CheckHitbox(leftHitBox, Vector3.left);
-            CheckHitbox(rightHitBox, Vector3.right);
-            CheckHitbox(upHitBox, Vector3.up);
-            CheckHitbox(downHitBox, Vector3.down);
+            CheckHitbox(leftHitBox, Vector2.left);
+            CheckHitbox(rightHitBox, Vector2.right);
+            CheckHitbox(upHitBox, Vector2.up);
+            CheckHitbox(downHitBox, Vector2.down);
         }
     }
 
     // --- Helper Method for handleAttacks() (Extracted from "His" Script) ---
-    void CheckHitbox(GameObject hitbox, Vector3 knockbackDirection)
+    void CheckHitbox(GameObject hitbox, Vector2 knockbackDirection)
     {
          if (!hitbox.activeInHierarchy) return; // Don't check inactive hitboxes
 
@@ -206,24 +206,43 @@ public class PlayerScript : MonoBehaviour
              {
                  if (c.CompareTag("Enemy")) // Use CompareTag for efficiency
                  {
-                     FollowPlayerScript enemyScript = c.gameObject.GetComponent<FollowPlayerScript>();
-                     if (enemyScript != null)
-                     {
-                        Debug.Log("ENEMY HEALTH: " + enemyScript.health);
+                    FollowPlayerScript enemyScript = c.gameObject.GetComponent<FollowPlayerScript>();
+                    MoveAndFollowPlayerScript enemyScript2 = c.gameObject.GetComponent<MoveAndFollowPlayerScript>();
+
+                    if (enemyScript != null)
+                    {
+                        //Debug.Log("ENEMY HEALTH: " + enemyScript.health);
                         enemyScript.health -= 1; // Assuming damage is 1
+
+                        // Apply knockback if enemy has Rigidbody2D
+                        Rigidbody2D enemyRb = c.attachedRigidbody;
+
+                        if (enemyRb != null)
+                        {
+                            enemyRb.position += knockbackDirection * knockBack;
+                            //c.attachedRigidbody.linearVelocity = knockbackDirection * knockBack;
+                            attackCooldownActive = true; // Start cooldown
+                        }
+                        //break; // Only hit one enemy per swing in this direction
+                    }
+                    
+                    // for moving and follow enemies
+                    if (enemyScript2 != null)
+                    {
+                        //Debug.Log("ENEMY HEALTH: " + enemyScript2.health);
+                        enemyScript2.health -= 1; // Assuming damage is 1
                         
                         // Apply knockback if enemy has Rigidbody2D
                         Rigidbody2D enemyRb = c.attachedRigidbody;
 
                         if (enemyRb != null)
                         {
-                            Debug.Log("HEY");
-                            enemyRb.linearVelocity = knockbackDirection * knockBack;
+                            enemyRb.position += knockbackDirection * knockBack;
                             attackCooldownActive = true; // Start cooldown
                         }
                         break; // Only hit one enemy per swing in this direction
-                     }
-                 }
+                    }
+                }
                  // Add checks for other tags here (e.g., "ResourceNode") if needed
              }
          }
