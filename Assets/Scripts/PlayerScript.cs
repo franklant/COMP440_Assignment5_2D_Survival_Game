@@ -23,8 +23,8 @@ public class PlayerScript : MonoBehaviour
     private CraftingManager craftingManager;
     
     [Header("Item Holding")]
-    public SpriteRenderer heldItemSprite; 
-    private float currentItemDamage = 1f;
+    public SpriteRenderer heldItemSprite; // Drag your 'HeldItem' child object's SpriteRenderer here
+    private float currentItemDamage = 1f; // Stores the damage of the currently held item. Defaults to 1 (fist).
 
     // --- ⭐ NEW VARIABLES ADDED HERE ---
     [Header("Component References")]
@@ -34,6 +34,7 @@ public class PlayerScript : MonoBehaviour
     public HungerBar hungerBar;               
     // ---------------------------------
 
+    // --- Start() Method ---
     void Start()
     {
         GameObject craftingManagerObject = GameObject.FindGameObjectWithTag("Crafting");
@@ -64,6 +65,7 @@ public class PlayerScript : MonoBehaviour
         // ------------------------------------------------
     }
 
+    // --- Update() Method ---
     void Update()
     {
         prototypeMovement();        
@@ -99,9 +101,8 @@ public class PlayerScript : MonoBehaviour
         }
     }
     // ---------------------------------
-
-    // --- (Rest of your script: prototypeMovement, handleMovementAnimations, etc.) ---
     
+    // --- prototypeMovement() Method ---
     void prototypeMovement()
     {
         // Check for attack input first
@@ -156,6 +157,7 @@ public class PlayerScript : MonoBehaviour
         }
     }
     
+    // --- handleMovementAnimations() Method ---
     void handleMovementAnimations()
     {
         myAnimator.SetBool("isMoving", isMoving); 
@@ -199,13 +201,14 @@ public class PlayerScript : MonoBehaviour
         }
     }
     
+    // --- handleFightAnimations() Method ---
     void handleFightAnimations()
     {
          myAnimator.SetBool("isAttacking", isAttacking); 
 
         if (isAttacking)
         {
-            handleMovementAnimations(); 
+            handleMovementAnimations(); // Reuse movement anim logic for direction
 
             leftHitBox.SetActive(direction == "left");
             rightHitBox.SetActive(direction == "right");
@@ -221,6 +224,7 @@ public class PlayerScript : MonoBehaviour
         }
     }
     
+    // --- handleAttacks() Method ---
     void handleAttacks()
     {
         if (attackCooldownActive)
@@ -242,6 +246,7 @@ public class PlayerScript : MonoBehaviour
         }
     }
     
+    // --- CheckHitbox() Method ---
     void CheckHitbox(GameObject hitbox, Vector3 knockbackDirection)
     {
          if (!hitbox.activeInHierarchy) return; 
@@ -274,6 +279,7 @@ public class PlayerScript : MonoBehaviour
          }
     }
     
+    // --- OnTriggerEnter2D() Method ---
     private void OnTriggerEnter2D(Collider2D other)
     {
         CraftingStationIdentifier station = other.GetComponent<CraftingStationIdentifier>();
@@ -283,6 +289,7 @@ public class PlayerScript : MonoBehaviour
         }
     }
     
+    // --- OnTriggerExit2D() Method ---
     private void OnTriggerExit2D(Collider2D other)
     {
         CraftingStationIdentifier station = other.GetComponent<CraftingStationIdentifier>();
@@ -292,6 +299,7 @@ public class PlayerScript : MonoBehaviour
         }
     }
     
+    // --- UpdateHeldItem() Method ---
     public void UpdateHeldItem(Sprite spriteToShow)
     {
         if (heldItemSprite == null)
@@ -312,8 +320,10 @@ public class PlayerScript : MonoBehaviour
         }
     }
     
+    // --- UpdateCurrentDamage() Method ---
     public void UpdateCurrentDamage(float newDamage)
     {
+        // If the item has 0 or invalid damage, default to 1 (fist)
         if (newDamage <= 0)
         {
             currentItemDamage = 1f;

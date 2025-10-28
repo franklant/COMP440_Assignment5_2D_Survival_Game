@@ -26,8 +26,10 @@ public class Item : ScriptableObject
     public ActionType actionType;
     public TileBase tile; 
     
+    // --- ⭐ NEW FIELD ADDED HERE ---
     [Tooltip("Default damage is 1 (fist). Only applies if ActionType is Attack.")]
     public float damage = 1f; 
+    // -----------------------------
     
     [Header("Inventory Properties")]
     public bool stackable = true;
