@@ -4,95 +4,139 @@ using UnityEngine;
 
 public class CraftingManager : MonoBehaviour
 {
-    // A reference to the player's inventory
-    private Inventory inventory;
-    
-    // The crafting station the player is currently at
+    // Assign your InventoryManager in the Inspector
+    public InventoryManager inventoryManager;
+
+    // This can be used later if you have global recipes
+    public List<Recipe> recipes;
+
     private CraftingStation currentStation = CraftingStation.None;
 
     void Start()
     {
-        // Find the inventory in the scene
-        inventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<Inventory>();
-        if (inventory == null)
-        {
-            Debug.LogError("CraftingManager could not find the Inventory in the scene!");
-        }
+        inventoryManager = FindFirstObjectByType<InventoryManager>();
+        Debug.Log("On Start, CraftingManager's reference to InventoryManager is: " + inventoryManager);
+         // Ensure UI reflects starting station (None)
+         NotifyCraftingUI();
     }
 
-    /// <summary>
-    /// Allows other scripts (like the Player) to tell the manager which station we are at.
-    /// </summary>
-    /// <param name="newStation">The station the player has entered or exited.</param>
     public void SetCurrentCraftingStation(CraftingStation newStation)
     {
+        Debug.Log($"Setting Current Crafting Station to: {newStation}"); // Add this
         currentStation = newStation;
+        NotifyCraftingUI(); // Notify UI when station changes
     }
 
-    /// <summary>
-    /// Checks if a recipe can be crafted with the current inventory and station.
-    /// </summary>
     public bool CanCraft(Recipe recipe)
     {
-        // 1. Check if the player is at the required station
+         // --- SAFETY CHECK ---
+         if (inventoryManager == null) {
+             Debug.LogError("InventoryManager reference is NULL in CanCraft!");
+             return false;
+         }
+         if (recipe == null) {
+              Debug.LogError("Attempting to check CanCraft for a NULL recipe!");
+              return false;
+         }
+         // --- END SAFETY CHECK ---
+
+
+        // --- BREADCRUMB 1: Station Check ---
+        Debug.Log($"CanCraft Check for '{recipe.outputItem?.itemName ?? "NULL Recipe Output"}': Required station='{recipe.requiredStation}', Current station='{currentStation}'.");
         if (recipe.requiredStation != CraftingStation.None && recipe.requiredStation != currentStation)
         {
-            // We are not at the right station, so we can't craft.
+            Debug.LogWarning("-> Station check FAILED.");
             return false;
         }
 
-        // 2. Check if the player has all the required ingredients
+        // --- BREADCRUMB 2: Ingredient Check ---
+        if(recipe.ingredients == null || recipe.ingredients.Count == 0) {
+             Debug.LogWarning($"Recipe '{recipe.outputItem?.itemName ?? "Unknown"}' has no ingredients defined!");
+             // Decide if recipes with no ingredients are craftable (usually true)
+             // return true; // Or false depending on your game rules
+        }
+
         foreach (Ingredient ingredient in recipe.ingredients)
         {
-            if (!inventory.HasItem(ingredient.item, ingredient.quantity))
-            {
-                // We are missing an ingredient, so we can't craft.
+            if (ingredient == null || ingredient.item == null) {
+                Debug.LogError($"Recipe '{recipe.outputItem?.itemName ?? "Unknown"}' has a null ingredient or item!", recipe);
                 return false;
+            }
+            bool hasIngredient = inventoryManager.HasItem(ingredient.item, ingredient.quantity);
+
+            // --- BREADCRUMB 3: Specific Ingredient Status ---
+            Debug.Log($"CanCraft Ingredient Check: Need {ingredient.quantity} of '{ingredient.item.itemName}'. Player has enough: {hasIngredient}");
+            if (!hasIngredient)
+            {
+                Debug.LogWarning("-> Ingredient check FAILED for " + ingredient.item.itemName);
+                return false; // Exit immediately if one ingredient is missing
             }
         }
 
-        // If we passed both checks, we can craft!
+        // If we got through the station check and ALL ingredient checks passed:
+        Debug.Log($"-> CanCraft PASSED for {recipe.outputItem?.itemName ?? "Unknown"}");
         return true;
     }
 
-    /// <summary>
-    /// Attempts to craft an item from a recipe.
-    /// </summary>
+
     public void Craft(Recipe recipe)
     {
-        // First, check if we are able to craft this item.
+        // Add safety check
+        if (recipe == null) {
+            Debug.LogError("Craft called with a NULL recipe!");
+            return;
+        }
+
+        Debug.Log($"CraftingManager.Craft() called for {recipe.outputItem?.itemName ?? "Unknown"}. Running CanCraft check...");
         if (CanCraft(recipe))
         {
-            // Start the crafting process, which includes a timer
             StartCoroutine(CraftingCoroutine(recipe));
         }
         else
         {
-            // If we can't craft, log a message to the console for debugging.
-            Debug.LogWarning($"Failed to craft {recipe.outputItem.itemName}. Check requirements.");
+            Debug.LogWarning($"Crafting failed because CanCraft returned false for {recipe.outputItem?.itemName ?? "Unknown"}.");
         }
     }
 
-    /// <summary>
-    /// A coroutine that handles the crafting timer and resource consumption.
-    /// </summary>
     private IEnumerator CraftingCoroutine(Recipe recipe)
     {
-        Debug.Log($"Crafting {recipe.outputItem.itemName}...");
-
-        // Wait for the specified crafting time
-        yield return new WaitForSeconds(recipe.craftingTime);
-
-        // After waiting, consume the ingredients
-        foreach (Ingredient ingredient in recipe.ingredients)
-        {
-            inventory.RemoveItem(ingredient.item, ingredient.quantity);
+        // Add safety check
+        if (recipe == null || recipe.outputItem == null) {
+            Debug.LogError("CraftingCoroutine started with invalid recipe!");
+            yield break; // Stop the coroutine
         }
 
-        // Add the crafted item(s) to the inventory
-        inventory.AddItem(recipe.outputItem, recipe.outputQuantity);
+        Debug.Log($"Crafting {recipe.outputItem.itemName}...");
+        yield return new WaitForSeconds(recipe.craftingTime); // Use recipe-specific time
 
-        Debug.Log($"Successfully crafted {recipe.outputItem.itemName}!");
+        // Consume Ingredients
+        foreach (Ingredient ingredient in recipe.ingredients)
+        {
+            if (ingredient == null || ingredient.item == null) continue; // Skip bad ingredients
+
+            Debug.Log($"Attempting to remove {ingredient.quantity} {ingredient.item.itemName} from inventory...");
+            bool removed = inventoryManager.RemoveItem(ingredient.item, ingredient.quantity);
+            if (!removed) {
+                 Debug.LogError($"Failed to remove ingredient {ingredient.item.itemName} during crafting! Coroutine stopped.");
+                 yield break; // Stop if ingredients couldn't be removed
+            }
+        }
+
+        // Add Output Item
+        inventoryManager.AddItem(recipe.outputItem);
+        Debug.Log($"<color=green>Successfully crafted {recipe.outputItem.itemName}!</color>");
+    }
+
+    // --- HELPER TO NOTIFY UI ---
+     private void NotifyCraftingUI()
+    {
+        // Debug.Log("Attempting to notify CraftingUI (from CraftingManager)..."); // Can be noisy
+        CraftingUI craftingUIInstance = FindFirstObjectByType<CraftingUI>();
+        if (craftingUIInstance != null)
+        {
+            // Debug.Log("<color=purple>Found CraftingUI instance (from CM)! Calling UpdateAllButtons...</color>"); // Can be noisy
+            craftingUIInstance.UpdateAllButtons();
+        }
     }
 }
 
