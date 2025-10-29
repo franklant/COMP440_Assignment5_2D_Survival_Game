@@ -28,7 +28,7 @@ public class HungerBar : MonoBehaviour
         // Safety check for LogicManager
         if (logicManager == null)
         {
-            logicManager = FindObjectOfType<LogicManagerScript>();
+            logicManager = FindAnyObjectByType<LogicManagerScript>();
             if (logicManager == null)
             {
                 Debug.LogError("LogicManager is not assigned or found!", this);
