@@ -7,7 +7,6 @@ public class LogicManagerScript : MonoBehaviour
     public GameObject globalLight;  // The "Sun" or our main light source
     private Light2D lightSource;    // The actual light source to control the intensity
     public GameObject enemy;
-    public GameObject enemy2;
     public GameObject spawnLocation;
     private bool spawnActive;
     public float minutesInADay = 5; // How many minutes make a full day
@@ -124,8 +123,6 @@ public class LogicManagerScript : MonoBehaviour
     {
         // get a list of the transforms from each spawn location
         Transform[] locations = spawnLocation.GetComponentsInChildren<Transform>();
-        GameObject[] enemyList = { enemy, enemy2 };
-        
         int maxIndex = 11 - 1; // number of locations - 1
 
         for (int i = 0; i < 5; i++)
@@ -135,16 +132,7 @@ public class LogicManagerScript : MonoBehaviour
 
             if (lo != null)
             {
-                int enemyIndex = UnityEngine.Random.Range(0, 10);
-                if (enemyIndex > 5)
-                {
-                    Instantiate(enemy2, lo.position, lo.rotation);
-                }
-                else
-                {
-                    Instantiate(enemy, lo.position, lo.rotation);
-                }
-                
+                Instantiate(enemy, lo.position, lo.rotation);
                 locations[locationIndex] = null;    // make the previously selected location no longer available
             }    
         }

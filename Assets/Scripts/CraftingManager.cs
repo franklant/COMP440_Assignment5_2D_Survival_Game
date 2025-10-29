@@ -14,7 +14,6 @@ public class CraftingManager : MonoBehaviour
 
     void Start()
     {
-        inventoryManager = FindFirstObjectByType<InventoryManager>();
         Debug.Log("On Start, CraftingManager's reference to InventoryManager is: " + inventoryManager);
          // Ensure UI reflects starting station (None)
          NotifyCraftingUI();
@@ -131,7 +130,7 @@ public class CraftingManager : MonoBehaviour
      private void NotifyCraftingUI()
     {
         // Debug.Log("Attempting to notify CraftingUI (from CraftingManager)..."); // Can be noisy
-        CraftingUI craftingUIInstance = FindFirstObjectByType<CraftingUI>();
+        CraftingUI craftingUIInstance = FindAnyObjectByType<CraftingUI>();
         if (craftingUIInstance != null)
         {
             // Debug.Log("<color=purple>Found CraftingUI instance (from CM)! Calling UpdateAllButtons...</color>"); // Can be noisy

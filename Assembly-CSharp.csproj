@@ -52,9 +52,12 @@
     <Compile Include="Assets\Scripts\PlayerScript.cs" />
     <Compile Include="Assets\Scripts\RecipeItemDisplay.cs" />
     <Compile Include="Assets\Scripts\CraftingTester.cs" />
+    <Compile Include="Assets\Assets\Scripts\ThirstBar.cs" />
     <Compile Include="Assets\Scripts\FollowPlayerScript.cs" />
     <Compile Include="Assets\Scripts\InventoryManager.cs" />
     <Compile Include="Assets\Scripts\MoveAndFollowPlayerScript.cs" />
+    <Compile Include="Assets\Assets\Scripts\HungerBar.cs" />
+    <Compile Include="Assets\Assets\HealthBar.cs" />
     <Compile Include="Assets\Scripts\RecipeButton.cs" />
     <Compile Include="Assets\Scripts\demoScript.cs" />
     <Compile Include="Assets\Scripts\CraftingStationIdentifier.cs" />
@@ -70,6 +73,7 @@
     <Compile Include="Assets\Scripts\LightSourceScript.cs" />
     <Compile Include="Assets\Scripts\RecipeItem.cs" />
     <Compile Include="Assets\Scripts\Recipe.cs" />
+    <Compile Include="Assets\Assets\Scripts\Degree.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

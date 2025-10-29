@@ -564,7 +564,7 @@ GameObject:
   - component: {fileID: 778645465279357395}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -742,6 +742,10 @@ MonoBehaviour:
   downHitBox: {fileID: 3717870742640155638}
   movementSpeed: 1
   knockBack: 7
+  attackCooldownDuration: 0.5
+  heldItemSprite: {fileID: 0}
+  inventoryManager: {fileID: 0}
+  hungerBar: {fileID: 0}
 --- !u!95 &778645465279357395
 Animator:
   serializedVersion: 7
