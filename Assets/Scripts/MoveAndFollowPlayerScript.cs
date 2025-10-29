@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class MoveAndFollowPlayerScript : MonoBehaviour
@@ -39,6 +38,11 @@ public class MoveAndFollowPlayerScript : MonoBehaviour
         SpriteRenderer backgroundPlaneRenderer = GameObject.FindGameObjectWithTag("Background").GetComponent<SpriteRenderer>();
 
         target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+
+        if (target == null)
+        {
+            Debug.Log("there is no target");
+        }
 
         if (backgroundPlaneRenderer == null)
         {
