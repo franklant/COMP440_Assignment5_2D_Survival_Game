@@ -1,5 +1,7 @@
 using UnityEngine;
-using System.Collections.Generic; // Needed for List in handleAttacks
+using System.Collections.Generic;
+using UnityEngine.Rendering;
+using System.Threading; // Needed for List in handleAttacks
 
 public class PlayerScript : MonoBehaviour
 {
@@ -29,9 +31,15 @@ public class PlayerScript : MonoBehaviour
     // --- ⭐ NEW VARIABLES ADDED HERE ---
     [Header("Component References")]
     [Tooltip("Drag your InventoryManager object here")]
-    public InventoryManager inventoryManager; 
+    public InventoryManager inventoryManager;
     [Tooltip("Drag your HungerBar object here")]
-    public HungerBar hungerBar;               
+    public HungerBar hungerBar;
+    [Tooltip("Drag your HealthBar object here")]
+    public HealthBar healthBar;
+    public int currentHealth;
+    public bool isTakingDamage = false;
+    public float takeDamageTimer = 0;
+    public float takeDamageDuration = 1f;   
     // ---------------------------------
 
     // --- Start() Method ---
@@ -62,6 +70,14 @@ public class PlayerScript : MonoBehaviour
             if (hungerBar == null)
                 Debug.LogError("HungerBar is not assigned on Player and could not be found!");
         }
+        if (healthBar == null)
+        {
+            // Try to find it if not assigned
+            healthBar = FindFirstObjectByType<HealthBar>();
+            if (healthBar == null)
+                Debug.LogError("HungerBar is not assigned on Player and could not be found!");
+        }
+        currentHealth = healthBar.currentHealth;
         // ------------------------------------------------
     }
 
@@ -70,8 +86,9 @@ public class PlayerScript : MonoBehaviour
     {
         prototypeMovement();        
         handleMovementAnimations(); 
-        handleFightAnimations();    
-        handleAttacks();            
+        handleFightAnimations();
+        handleAttacks();
+        takeDamage();
 
         // --- ⭐ NEW "EAT" LOGIC ADDED HERE ---
         // Check for right mouse click (Mouse1) to eat
@@ -242,23 +259,23 @@ public class PlayerScript : MonoBehaviour
             CheckHitbox(downHitBox, Vector3.down);
         }
     }
-    
+
     // --- CheckHitbox() Method ---
     void CheckHitbox(GameObject hitbox, Vector2 knockbackDirection)
     {
-         if (!hitbox.activeInHierarchy) return; // Don't check inactive hitboxes
+        if (!hitbox.activeInHierarchy) return; // Don't check inactive hitboxes
 
-         List<Collider2D> results = new List<Collider2D>();
-         // Correct way to get overlaps for 2D Physics
-         ContactFilter2D filter = ContactFilter2D.noFilter; // Or configure filter if needed
-         int hitCount = hitbox.GetComponent<Collider2D>().Overlap(filter, results);
+        List<Collider2D> results = new List<Collider2D>();
+        // Correct way to get overlaps for 2D Physics
+        ContactFilter2D filter = ContactFilter2D.noFilter; // Or configure filter if needed
+        int hitCount = hitbox.GetComponent<Collider2D>().Overlap(filter, results);
 
-         if (hitCount > 0)
-         {
-             foreach (Collider2D c in results)
-             {
-                 if (c.CompareTag("Enemy")) // Use CompareTag for efficiency
-                 {
+        if (hitCount > 0)
+        {
+            foreach (Collider2D c in results)
+            {
+                if (c.CompareTag("Enemy")) // Use CompareTag for efficiency
+                {
                     FollowPlayerScript enemyScript = c.gameObject.GetComponent<FollowPlayerScript>();
                     MoveAndFollowPlayerScript enemyScript2 = c.gameObject.GetComponent<MoveAndFollowPlayerScript>();
 
@@ -296,11 +313,46 @@ public class PlayerScript : MonoBehaviour
                         break; // Only hit one enemy per swing in this direction
                     }
                 }
-                 // Add checks for other tags here (e.g., "ResourceNode") if needed
-             }
-         }
+                // Add checks for other tags here (e.g., "ResourceNode") if needed
+            }
+        }
     }
-    
+
+    void takeDamage()
+    {
+        if (isTakingDamage)
+        {
+            if (takeDamageTimer < takeDamageDuration)
+            {
+                takeDamageTimer += Time.deltaTime;
+            }
+            else
+            {
+                // timer is up, take more damage off the player
+                currentHealth -= 5;
+                takeDamageTimer = 0;
+            }
+        }
+        healthBar.slider.value = currentHealth; // always update the current health
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.collider.CompareTag("Enemy"))
+        {
+            isTakingDamage = true;
+        }
+    }
+
+    void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.collider.CompareTag("Enemy"))
+        {
+            isTakingDamage = false;
+            takeDamageTimer = 0;
+        }
+    }
+
     // --- OnTriggerEnter2D() Method ---
     private void OnTriggerEnter2D(Collider2D other)
     {
