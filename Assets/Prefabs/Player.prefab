@@ -562,6 +562,7 @@ GameObject:
   - component: {fileID: 3855774951712979893}
   - component: {fileID: 86689616351794154}
   - component: {fileID: 778645465279357395}
+  - component: {fileID: 1486623450253312621}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -741,8 +742,8 @@ MonoBehaviour:
   upHitBox: {fileID: 6374029652695266384}
   downHitBox: {fileID: 3717870742640155638}
   movementSpeed: 1
-  knockBack: 7
-  attackCooldownDuration: 0.5
+  knockBack: 0.3
+  attackCooldownDuration: 0.2
   heldItemSprite: {fileID: 0}
   inventoryManager: {fileID: 0}
   hungerBar: {fileID: 0}
@@ -768,6 +769,23 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1486623450253312621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7112483293021730295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d81b43993b9844c858e5926acaf92730, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CraftingTester
+  craftingManager: {fileID: 0}
+  inventoryManager: {fileID: 0}
+  woodenAxeRecipe: {fileID: 11400000, guid: 0e1da721296124ecfa3cccc27821376d, type: 2}
+  woodItem: {fileID: 11400000, guid: e2b6652c999444244b910ea7963e6e8c, type: 2}
+  stoneItem: {fileID: 11400000, guid: c466f763d498846099a123bcbd1a0a9c, type: 2}
 --- !u!1 &8280775079348560667
 GameObject:
   m_ObjectHideFlags: 0
