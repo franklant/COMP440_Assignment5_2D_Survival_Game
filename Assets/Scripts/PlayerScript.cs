@@ -334,6 +334,7 @@ public class PlayerScript : MonoBehaviour
             }
         }
         healthBar.slider.value = currentHealth; // always update the current health
+        healthBar.currentHealth = currentHealth;
     }
 
     void OnCollisionEnter2D(Collision2D collision)

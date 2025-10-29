@@ -6560,8 +6560,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   dayText: {fileID: 2131312147}
   hourText: {fileID: 1302897633}
-  minText: {fileID: 0}
-  tempText: {fileID: 0}
+  minText: {fileID: 387853740}
+  tempText: {fileID: 1389512296}
   logicScript: {fileID: 0}
 --- !u!1 &2131312147
 GameObject:
