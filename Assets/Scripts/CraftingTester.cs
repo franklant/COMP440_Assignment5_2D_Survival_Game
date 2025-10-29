@@ -15,10 +15,10 @@ public class CraftingTester : MonoBehaviour
     {
         // Automatically find managers if they aren't assigned in the Inspector
         if (craftingManager == null)
-            craftingManager = FindAnyObjectByType<CraftingManager>();
+            craftingManager = FindObjectOfType<CraftingManager>();
 
         if (inventoryManager == null)
-            inventoryManager = FindAnyObjectByType<InventoryManager>();
+            inventoryManager = FindObjectOfType<InventoryManager>();
     }
 
     void Update()

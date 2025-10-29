@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 7d0df9816cd7e445dbe0cecc2386b1fb
+guid: 370a77928e329478388cfff3594f70d6
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2445865832411743802
-    second: Wooden_Sword_JE2_BE2_0
+      213: 6401892693634432697
+    second: Stone_BE3_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Wooden_Sword_JE2_BE2_0
+      name: Stone_BE3_0
       rect:
         serializedVersion: 2
-        x: 0
+        x: 15
         y: 0
-        width: 360
-        height: 360
+        width: 270
+        height: 300
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6c935d2fbf98e0ed0800000000000000
-      internalID: -2445865832411743802
+      spriteID: 9bebf367c7718d850800000000000000
+      internalID: 6401892693634432697
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Wooden_Sword_JE2_BE2_0: -2445865832411743802
+      Stone_BE3_0: 6401892693634432697
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

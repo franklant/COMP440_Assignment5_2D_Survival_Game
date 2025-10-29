@@ -17,7 +17,7 @@ public class TemperatureManagerScript : MonoBehaviour
     void Start()
     {
         if (logicManager == null)
-            logicManager = FindAnyObjectByType<LogicManagerScript>();
+            logicManager = FindObjectOfType<LogicManagerScript>();
 
         // Initialize the temperature at the start of the game
         currentTemperature = minTemperature;
@@ -53,7 +53,7 @@ public class TemperatureManagerScript : MonoBehaviour
         if (temperatureText != null)
         {
             // Update the temperature text on the UI
-            temperatureText.text = "Temperature: " + currentTemperature.ToString("F1") + "ï¿½C"; // Shows 1 decimal point
+            temperatureText.text = "Temperature: " + currentTemperature.ToString("F1") + "°C"; // Shows 1 decimal point
         }
     }
 
