@@ -1,7 +1,5 @@
 using UnityEngine;
-using System.Collections.Generic;
-using UnityEngine.Rendering;
-using System.Threading; // Needed for List in handleAttacks
+using System.Collections.Generic; // Needed for List in handleAttacks
 
 public class PlayerScript : MonoBehaviour
 {
@@ -22,118 +20,81 @@ public class PlayerScript : MonoBehaviour
     private bool attackCooldownActive = false;
     public float attackCooldownDuration = 0.5f;
 
+    // --- CraftingManager Reference (Present in Both) ---
     private CraftingManager craftingManager;
-    
-    [Header("Item Holding")]
-    public SpriteRenderer heldItemSprite; // Drag your 'HeldItem' child object's SpriteRenderer here
-    private float currentItemDamage = 1f; // Stores the damage of the currently held item. Defaults to 1 (fist).
 
-    // --- ⭐ NEW VARIABLES ADDED HERE ---
+    [Header("Item Holding")] 
+    public SpriteRenderer heldItemSprite; 
+    private float currentItemDamage = 1f; 
+
+    // --- Component References ---
     [Header("Component References")]
     [Tooltip("Drag your InventoryManager object here")]
-    public InventoryManager inventoryManager;
+    public InventoryManager inventoryManager; 
     [Tooltip("Drag your HungerBar object here")]
-    public HungerBar hungerBar;
-    [Tooltip("Drag your HealthBar object here")]
-    public HealthBar healthBar;
-    public int currentHealth;
-    public bool isTakingDamage = false;
-    public float takeDamageTimer = 0;
-    public float takeDamageDuration = 1f;   
-    // ---------------------------------
-
-    // --- Start() Method ---
+    public HungerBar hungerBar;               
+    
     void Start()
     {
-        GameObject craftingManagerObject = GameObject.FindGameObjectWithTag("Crafting");
-        if (craftingManagerObject != null)
-        {
-            craftingManager = craftingManagerObject.GetComponent<CraftingManager>();
-        }
+        craftingManager = FindFirstObjectByType<CraftingManager>();
+        
         if (craftingManager == null)
         {
-            Debug.LogError("Player could not find the CraftingManager!");
+            Debug.LogError("Player could not find the CraftingManager in the scene!");
         }
-
-        // --- ⭐ ADDED: Safety checks for new components ---
+        
         if (inventoryManager == null)
         {
-            // Try to find it if not assigned
             inventoryManager = FindFirstObjectByType<InventoryManager>();
             if (inventoryManager == null)
                 Debug.LogError("InventoryManager is not assigned on Player and could not be found!");
         }
         if (hungerBar == null)
         {
-            // Try to find it if not assigned
             hungerBar = FindFirstObjectByType<HungerBar>();
             if (hungerBar == null)
                 Debug.LogError("HungerBar is not assigned on Player and could not be found!");
         }
-        if (healthBar == null)
-        {
-            // Try to find it if not assigned
-            healthBar = FindFirstObjectByType<HealthBar>();
-            if (healthBar == null)
-                Debug.LogError("HungerBar is not assigned on Player and could not be found!");
-        }
-        currentHealth = healthBar.currentHealth;
-        // ------------------------------------------------
     }
-
-    // --- Update() Method ---
+    
     void Update()
     {
         prototypeMovement();        
         handleMovementAnimations(); 
-        handleFightAnimations();
-        handleAttacks();
-        takeDamage();
+        handleFightAnimations();    
+        handleAttacks();            
 
-        // --- ⭐ NEW "EAT" LOGIC ADDED HERE ---
-        // Check for right mouse click (Mouse1) to eat
         if (Input.GetKeyDown(KeyCode.Mouse1)) 
         {
             HandleEating();
         }
-        // ------------------------------------
     }
-
-    // --- ⭐ NEW FUNCTION ADDED HERE ---
+    
     private void HandleEating()
     {
         if (inventoryManager == null || hungerBar == null) return;
-
-        // Get the currently selected item
-        Item selectedItem = inventoryManager.GetSelectedItem(false); // false = don't use/consume item yet
-
-        // Check if we actually got an item and if that item is food
+        
+        Item selectedItem = inventoryManager.GetSelectedItem(false); 
+        
         if (selectedItem != null && selectedItem.isFood)
         {
-            // It's food! Now tell the inventory to consume one
-            inventoryManager.GetSelectedItem(true); // true = use/consume one item
-            
-            // Call the HungerBar's EatFood function
+            inventoryManager.GetSelectedItem(true); 
             hungerBar.EatFood(selectedItem.hungerRestore, selectedItem.healthRestore);
         }
     }
-    // ---------------------------------
     
-    // --- prototypeMovement() Method ---
     void prototypeMovement()
     {
-        // Check for attack input first
-        if (Input.GetKey(KeyCode.Space)) // Assuming Space is attack
+        if (Input.GetKey(KeyCode.Space)) 
         {
             isMoving = false;
-            isAttacking = true; // Set attack state
+            isAttacking = true; 
         }
         else
         {
-            isAttacking = false; // Clear attack state if Space is not held
+            isAttacking = false; 
         }
-
-        // Only allow movement if not attacking
+        
         if (!isAttacking)
         {
             Vector3 moveDirection = Vector3.zero;
@@ -158,8 +119,7 @@ public class PlayerScript : MonoBehaviour
                 moveDirection = Vector3.down;
                 direction = "down";
             }
-
-            // Apply movement and update state
+            
             if (moveDirection != Vector3.zero)
             {
                 isMoving = true;
@@ -167,14 +127,13 @@ public class PlayerScript : MonoBehaviour
             }
             else
             {
-                isMoving = false; // No movement keys pressed
+                isMoving = false; 
             }
         } else {
-             isMoving = false; // Ensure not moving if attacking
+             isMoving = false; 
         }
     }
     
-    // --- handleMovementAnimations() Method ---
     void handleMovementAnimations()
     {
         myAnimator.SetBool("isMoving", isMoving); 
@@ -212,24 +171,20 @@ public class PlayerScript : MonoBehaviour
         }
     }
     
-    // --- handleFightAnimations() Method ---
     void handleFightAnimations()
     {
-        myAnimator.SetBool("isAttacking", isAttacking); // Use the state variable
+         myAnimator.SetBool("isAttacking", isAttacking); 
 
-        // Only activate hitboxes and set specific attack anims if attacking
         if (isAttacking)
         {
-            // Update directional animations based on 'direction'
-            handleMovementAnimations(); // Reuse movement anim logic for direction
+            handleMovementAnimations(); 
 
-            // Activate correct hitbox based on 'direction'
             leftHitBox.SetActive(direction == "left");
             rightHitBox.SetActive(direction == "right");
             upHitBox.SetActive(direction == "up");
             downHitBox.SetActive(direction == "down");
         }
-        else // Ensure all hitboxes are off if not attacking
+        else 
         {
             leftHitBox.SetActive(false);
             rightHitBox.SetActive(false);
@@ -238,7 +193,6 @@ public class PlayerScript : MonoBehaviour
         }
     }
     
-    // --- handleAttacks() Method ---
     void handleAttacks()
     {
         if (attackCooldownActive)
@@ -253,127 +207,102 @@ public class PlayerScript : MonoBehaviour
 
         if (isAttacking && !attackCooldownActive)
         {
-            CheckHitbox(leftHitBox, Vector3.left);
-            CheckHitbox(rightHitBox, Vector3.right);
-            CheckHitbox(upHitBox, Vector3.up);
-            CheckHitbox(downHitBox, Vector3.down);
+            CheckHitbox(leftHitBox, Vector2.left);
+            CheckHitbox(rightHitBox, Vector2.right);
+            CheckHitbox(upHitBox, Vector2.up);
+            CheckHitbox(downHitBox, Vector2.down);
         }
     }
 
-    // --- CheckHitbox() Method ---
+    // --- ⭐ MODIFIED THIS FUNCTION ---
     void CheckHitbox(GameObject hitbox, Vector2 knockbackDirection)
     {
-        if (!hitbox.activeInHierarchy) return; // Don't check inactive hitboxes
+         if (!hitbox.activeInHierarchy) return; 
 
-        List<Collider2D> results = new List<Collider2D>();
-        // Correct way to get overlaps for 2D Physics
-        ContactFilter2D filter = ContactFilter2D.noFilter; // Or configure filter if needed
-        int hitCount = hitbox.GetComponent<Collider2D>().Overlap(filter, results);
+         List<Collider2D> results = new List<Collider2D>();
+         ContactFilter2D filter = ContactFilter2D.noFilter; 
+         int hitCount = hitbox.GetComponent<Collider2D>().Overlap(filter, results);
 
-        if (hitCount > 0)
-        {
-            foreach (Collider2D c in results)
-            {
-                if (c.CompareTag("Enemy")) // Use CompareTag for efficiency
-                {
+         if (hitCount > 0)
+         {
+             foreach (Collider2D c in results)
+             {
+                 if (c.CompareTag("Enemy")) 
+                 {
                     FollowPlayerScript enemyScript = c.gameObject.GetComponent<FollowPlayerScript>();
                     MoveAndFollowPlayerScript enemyScript2 = c.gameObject.GetComponent<MoveAndFollowPlayerScript>();
 
                     if (enemyScript != null)
                     {
-                        //Debug.Log("ENEMY HEALTH: " + enemyScript.health);
-                        enemyScript.health -= 1; // Assuming damage is 1
-
-                        // Apply knockback if enemy has Rigidbody2D
+                        enemyScript.health -= currentItemDamage; 
                         Rigidbody2D enemyRb = c.attachedRigidbody;
 
                         if (enemyRb != null)
                         {
                             enemyRb.position += knockbackDirection * knockBack;
-                            //c.attachedRigidbody.linearVelocity = knockbackDirection * knockBack;
-                            attackCooldownActive = true; // Start cooldown
+                            attackCooldownActive = true; 
                         }
-                        //break; // Only hit one enemy per swing in this direction
                     }
-
-                    // for moving and follow enemies
+                    
                     if (enemyScript2 != null)
                     {
-                        //Debug.Log("ENEMY HEALTH: " + enemyScript2.health);
-                        enemyScript2.health -= 1; // Assuming damage is 1
-
-                        // Apply knockback if enemy has Rigidbody2D
+                        enemyScript2.health -= currentItemDamage; 
                         Rigidbody2D enemyRb = c.attachedRigidbody;
 
                         if (enemyRb != null)
                         {
                             enemyRb.position += knockbackDirection * knockBack;
-                            attackCooldownActive = true; // Start cooldown
+                            attackCooldownActive = true;
                         }
-                        break; // Only hit one enemy per swing in this direction
+                        break; 
                     }
-                }
-                // Add checks for other tags here (e.g., "ResourceNode") if needed
-            }
-        }
+                 }
+                 // Check for Resource
+                 else if (c.CompareTag("Resource"))
+                 {
+                     // Check for Trees
+                     TreeResource treeScript = c.gameObject.GetComponent<TreeResource>();
+                     if (treeScript != null)
+                     {
+                         treeScript.TakeDamage(currentItemDamage);
+                         attackCooldownActive = true; 
+                         return; // Only hit one thing
+                     }
+
+                     // ⭐ NEW: Check for Stone
+                     StoneResource stoneScript = c.gameObject.GetComponent<StoneResource>();
+                     if (stoneScript != null)
+                     {
+                         stoneScript.TakeDamage(currentItemDamage);
+                         attackCooldownActive = true;
+                         return; // Only hit one thing
+                     }
+                 }
+             }
+         }
     }
 
-    void takeDamage()
-    {
-        if (isTakingDamage)
-        {
-            if (takeDamageTimer < takeDamageDuration)
-            {
-                takeDamageTimer += Time.deltaTime;
-            }
-            else
-            {
-                // timer is up, take more damage off the player
-                currentHealth -= 5;
-                takeDamageTimer = 0;
-            }
-        }
-        healthBar.slider.value = currentHealth; // always update the current health
-    }
 
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.collider.CompareTag("Enemy"))
-        {
-            isTakingDamage = true;
-        }
-    }
-
-    void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.collider.CompareTag("Enemy"))
-        {
-            isTakingDamage = false;
-            takeDamageTimer = 0;
-        }
-    }
-
-    // --- OnTriggerEnter2D() Method ---
     private void OnTriggerEnter2D(Collider2D other)
     {
         CraftingStationIdentifier station = other.GetComponent<CraftingStationIdentifier>();
         if (station != null && craftingManager != null)
         {
+            Debug.Log("Entered crafting station area: " + station.stationType);
             craftingManager.SetCurrentCraftingStation(station.stationType);
         }
     }
-    
-    // --- OnTriggerExit2D() Method ---
+
     private void OnTriggerExit2D(Collider2D other)
     {
         CraftingStationIdentifier station = other.GetComponent<CraftingStationIdentifier>();
         if (station != null && craftingManager != null)
         {
+            Debug.Log("Left crafting station area: " + station.stationType);
             craftingManager.SetCurrentCraftingStation(CraftingStation.None);
         }
     }
     
-    // --- UpdateHeldItem() Method ---
     public void UpdateHeldItem(Sprite spriteToShow)
     {
         if (heldItemSprite == null)
@@ -394,10 +323,8 @@ public class PlayerScript : MonoBehaviour
         }
     }
     
-    // --- UpdateCurrentDamage() Method ---
     public void UpdateCurrentDamage(float newDamage)
     {
-        // If the item has 0 or invalid damage, default to 1 (fist)
         if (newDamage <= 0)
         {
             currentItemDamage = 1f;

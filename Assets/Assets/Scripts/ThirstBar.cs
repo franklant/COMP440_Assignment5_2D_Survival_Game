@@ -24,7 +24,7 @@ public class ThirstBar : MonoBehaviour
     void Start()
     {
         if (logicManager == null)
-            logicManager = FindAnyObjectByType<LogicManagerScript>();
+            logicManager = FindObjectOfType<LogicManagerScript>();
 
         currentThirst = maxThirst;
         currentHealth = maxHealth;

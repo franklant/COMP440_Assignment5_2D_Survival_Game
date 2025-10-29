@@ -1,30 +1,42 @@
+using System;
 using UnityEngine;
+using Random = UnityEngine.Random; // ⭐ Be specific because 'System' also has a Random
 
 public class MoveAndFollowPlayerScript : MonoBehaviour
 {
-    private Transform target;
+    private Transform target; // We will find this in Update()
     public Rigidbody2D myRigidBody;
     public BoxCollider2D myBoxCollider;
     public SpriteRenderer mySpriteRenderer;
+    
+    [Header("Stats")]
     public float health = 5;
     public float movementSpeed;
+    
+    [Header("Detection")]
     public float detectionRadius = 1f;
     public float stoppingDistance = 0.2f;
     public bool isAttacked = false;
+    
+    [Header("AI State")]
     private int scatterState = 0;
     private int followState = 1;
     private int moveState = 2;
     private int patrolState = 3;
     public int currentState;
-
     private float yBounds;
     private float xBounds;
-
     public float moveDuration;
     private float currentMoveTime = 0;
-
     public bool shouldFollow = false;
 
+    // ⭐ --- NEW LOOT VARIABLES --- ⭐
+    [Header("Loot Drops")]
+    [Tooltip("The 'RawMeat' item prefab to spawn when killed")]
+    public GameObject rawMeatPrefab;
+    [Tooltip("How many pieces of meat to drop")]
+    public int amountToDrop = 1;
+    // ⭐ -------------------------- ⭐
 
     Vector3 endPoint;
     Vector3 direction;
@@ -36,14 +48,7 @@ public class MoveAndFollowPlayerScript : MonoBehaviour
         currentState = scatterState;
 
         SpriteRenderer backgroundPlaneRenderer = GameObject.FindGameObjectWithTag("Background").GetComponent<SpriteRenderer>();
-
-        target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
-
-        if (target == null)
-        {
-            Debug.Log("there is no target");
-        }
-
+        
         if (backgroundPlaneRenderer == null)
         {
             Debug.LogError("Cannot Access Backgrounnd Plane Object/Sprite Renderer!");
@@ -54,9 +59,35 @@ public class MoveAndFollowPlayerScript : MonoBehaviour
         }
     }
 
+    // NEW FUNCTION to find the player safely
+    void FindPlayer()
+    {
+        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+        if (playerObject != null)
+        {
+            target = playerObject.GetComponent<Transform>();
+        }
+    }
+
+
     // Update is called once per frame
     void Update()
     {
+        // --- MODIFIED SECTION ---
+        // If we don't have a target...
+        if (target == null)
+        {
+            FindPlayer(); // ...try to find one.
+
+            // If we still don't have one, stop running this Update.
+            // We'll try again next frame.
+            if (target == null)
+            {
+                return; 
+            }
+        }
+        // --- END MODIFIED SECTION ---
+
         if (currentState == scatterState && !shouldFollow)
         {
             scatter();
@@ -74,8 +105,7 @@ public class MoveAndFollowPlayerScript : MonoBehaviour
 
         float distanceToTarget = (transform.position - target.transform.position).magnitude;
         Vector3 distanceToTargetRaw = (transform.position - target.transform.position);
-        // Debug.Log("Distance: " + distanceToTargetRaw);
-
+        
         if (distanceToTarget <= detectionRadius && distanceToTarget > stoppingDistance && !isAttacked)
         {
             shouldFollow = true;
@@ -83,41 +113,38 @@ public class MoveAndFollowPlayerScript : MonoBehaviour
         }
         else
         {
-            //myRigidBody.linearVelocity = Vector3.zero;
             shouldFollow = false;
         }
 
+        // ⭐ --- MODIFIED HEALTH/DEATH LOGIC --- ⭐
         if (health <= 0)
         {
-            Destroy(gameObject);
+            // Drop loot before destroying
+            if (rawMeatPrefab != null)
+            {
+                for (int i = 0; i < amountToDrop; i++)
+                {
+                    // Spawn it with a slight random offset
+                    Vector3 offset = new Vector3(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f), 0);
+                    Instantiate(rawMeatPrefab, transform.position + offset, Quaternion.identity);
+                }
+            }
+            
+            Destroy(gameObject); // Now destroy the bear
         }
-
-        // flip sprite properly
-        // if (direction.x > 0 && (currentState == scatterState || currentState == moveState))
-        // {
-        //     mySpriteRenderer.flipX = true;
-        // } else if (direction.x < 0 && (currentState == scatterState || currentState == moveState))
-        // {
-        //     mySpriteRenderer.flipX = true;
-        // } else
-        // {
-        //     mySpriteRenderer.flipX = false;
-        // }
+        // ⭐ ----------------------------------- ⭐
     }
 
     public void scatter()
     {
-        endPoint = new Vector3(UnityEngine.Random.Range(-xBounds, xBounds), UnityEngine.Random.Range(-yBounds, yBounds), 0);
+        endPoint = new Vector3(Random.Range(-xBounds, xBounds), Random.Range(-yBounds, yBounds), 0);
         direction = (endPoint - transform.position).normalized;
         float distance = Vector3.Distance(endPoint, transform.position);
-
-        //Debug.Log(direction);
 
         RaycastHit2D hit = Physics2D.Raycast(transform.position, direction);
 
         if (hit.collider != null) // raycast has hit an object
         {
-            // abort and calculate new path
             if (hit.collider.name != myBoxCollider.name)
             {
                 Debug.Log(hit.collider.name);
@@ -138,10 +165,6 @@ public class MoveAndFollowPlayerScript : MonoBehaviour
         if (currentMoveTime < moveDuration && currentState != followState)
         {
             myRigidBody.linearVelocity = direction * movementSpeed;
-
-            float distanceToPoint = Vector3.Distance(endPoint, transform.position);
-            //Debug.Log("Distance to Point: " + distanceToPoint);
-
             currentMoveTime += Time.deltaTime;
         }
         else
@@ -152,14 +175,12 @@ public class MoveAndFollowPlayerScript : MonoBehaviour
     }
     public void follow()
     {
-        direction = (transform.position - target.transform.position).normalized;
+        if (target == null) { return; }
 
+        direction = (transform.position - target.transform.position).normalized;
         myRigidBody.linearVelocity = -direction * movementSpeed;
 
-        // 4. Optional: Rotate to face target (2D rotation)
-        // LookAt is generally not used in 2D. We calculate the angle instead:
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        // Debug.Log("Angle" + angle.ToString());
         transform.rotation = Quaternion.Euler(0, 0, angle);
 
         if (angle >= 90 || angle <= -90)
