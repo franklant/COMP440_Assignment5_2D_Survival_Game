@@ -192,6 +192,8 @@ MonoBehaviour:
   shouldFollow: 0
   rawMeatPrefab: {fileID: 6562188850452034014, guid: 62e6753e4c9f546f7ab31b35c5b5c66e, type: 3}
   amountToDrop: 1
+  damageAmount: 20
+  timeBetweenAttacks: 1.5
 --- !u!1001 &3264679232654526752
 PrefabInstance:
   m_ObjectHideFlags: 0

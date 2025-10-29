@@ -2048,9 +2048,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   globalLight: {fileID: 619394800}
+  enemy: {fileID: 8787146456169844123, guid: d4df41ed2f7faac448b84a50c8d0c396, type: 3}
+  enemy2: {fileID: 5933675642820828803, guid: 4b6092b2c0ed0944b94796c5dedcbb96, type: 3}
+  spawnLocation: {fileID: 1809686768}
   minutesInADay: 5
   currentTime: 0
   daysElapsed: 0
+  temperature: 20
   isMorning: 0
   isNoon: 0
   isNight: 0
@@ -8272,12 +8276,16 @@ PrefabInstance:
       objectReference: {fileID: 2101350903}
     - target: {fileID: 86689616351794154, guid: 050fa9dab3067a548b01089dedb421a2, type: 3}
       propertyPath: knockBack
-      value: 0.3
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 86689616351794154, guid: 050fa9dab3067a548b01089dedb421a2, type: 3}
       propertyPath: heldItemSprite
       value: 
       objectReference: {fileID: 1843286561}
+    - target: {fileID: 86689616351794154, guid: 050fa9dab3067a548b01089dedb421a2, type: 3}
+      propertyPath: craftingManager
+      value: 
+      objectReference: {fileID: 222599072}
     - target: {fileID: 86689616351794154, guid: 050fa9dab3067a548b01089dedb421a2, type: 3}
       propertyPath: inventoryManager
       value: 
@@ -8334,7 +8342,8 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Player
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1486623450253312621, guid: 050fa9dab3067a548b01089dedb421a2, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 3461122352616406368, guid: 050fa9dab3067a548b01089dedb421a2, type: 3}

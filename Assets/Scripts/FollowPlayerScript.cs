@@ -59,8 +59,7 @@ public class FollowPlayerScript : MonoBehaviour
         if (distanceToTarget <= detectionRadius && !isAttacked)
         {
             // Player is within detection range
-
-            if (distanceToTarget > stoppingDistance)
+            if (distanceToTarget > stoppingDistance + 0.1f)
             {
                 // Move towards player if not too close
                 Vector3 direction = (transform.position - target.transform.position).normalized;
@@ -76,14 +75,14 @@ public class FollowPlayerScript : MonoBehaviour
                 Vector3 direction = (transform.position - target.transform.position).normalized;
                 RotateTowardsPlayer(direction);
 
-
-                // Attack Cooldown Logic
                 attackTimer -= Time.deltaTime;
                 if (attackTimer <= 0)
                 {
                     AttackPlayer();
                     attackTimer = timeBetweenAttacks; // Reset cooldown
                 }
+
+
             }
         }
         else
@@ -115,6 +114,22 @@ public class FollowPlayerScript : MonoBehaviour
             mySpriteRenderer.flipY = false;
         }
     }
+
+    // void OnCollisionStay2D(Collision2D collision)
+    // {
+    //     // Attack Cooldown Logic
+    //      attackTimer -= Time.deltaTime;
+    //     if (attackTimer <= 0)
+    //     {
+    //         AttackPlayer();
+    //         attackTimer = timeBetweenAttacks; // Reset cooldown
+    //     }
+    // }
+
+    // void OnCollisionExit2D(Collision2D collision)
+    // {
+    //     attackTimer = timeBetweenAttacks;
+    // }
 
     void AttackPlayer()
     {

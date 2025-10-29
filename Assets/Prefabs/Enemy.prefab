@@ -114,6 +114,8 @@ MonoBehaviour:
   detectionRadius: 1
   stoppingDistance: 0.1
   isAttacked: 0
+  damageAmount: 20
+  timeBetweenAttacks: 1.5
 --- !u!50 &5996963686441103152
 Rigidbody2D:
   serializedVersion: 5

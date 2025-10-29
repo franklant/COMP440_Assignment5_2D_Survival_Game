@@ -106,7 +106,7 @@ public class MoveAndFollowPlayerScript : MonoBehaviour
         {
             shouldFollow = true; // Player is detected
 
-            if (distanceToTarget > stoppingDistance)
+            if (distanceToTarget > stoppingDistance + 0.1f)
             {
                 // Move towards player
                 currentState = moveState; // Or just set velocity directly

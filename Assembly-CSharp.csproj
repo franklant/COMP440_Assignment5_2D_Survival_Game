@@ -63,12 +63,16 @@
     <Compile Include="Assets\Scripts\CraftingStationIdentifier.cs" />
     <Compile Include="Assets\Scripts\UIScript.cs" />
     <Compile Include="Assets\Scripts\LogicManagerScript.cs" />
+    <Compile Include="Assets\_Recovery\PlayerScriptOLD.cs" />
+    <Compile Include="Assets\Scripts\StoneResource.cs" />
     <Compile Include="Assets\Scripts\InventorySlot.cs" />
     <Compile Include="Assets\Scripts\InventoryItem.cs" />
     <Compile Include="Assets\Scripts\RecipeSlot.cs" />
     <Compile Include="Assets\Scripts\Inventory.cs" />
+    <Compile Include="Assets\Scripts\ItemPickup.cs" />
     <Compile Include="Assets\Scripts\CraftingStationTrigger.cs" />
     <Compile Include="Assets\Scripts\CraftingManager.cs" />
+    <Compile Include="Assets\Scripts\TreeResource.cs" />
     <Compile Include="Assets\Scripts\Item.cs" />
     <Compile Include="Assets\Scripts\LightSourceScript.cs" />
     <Compile Include="Assets\Scripts\RecipeItem.cs" />

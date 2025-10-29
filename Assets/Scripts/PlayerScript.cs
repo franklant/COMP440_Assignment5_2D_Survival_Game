@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic; // Needed for List in handleAttacks
-using Random = UnityEngine.Random; // Be specific
+using Random = UnityEngine.Random;
+using JetBrains.Annotations; // Be specific
 
 public class PlayerScript : MonoBehaviour
 {
@@ -43,6 +44,10 @@ public class PlayerScript : MonoBehaviour
     public float timeBetweenSteps = 0.4f;
     private float footstepTimer;
 
+    [Tooltip("Drag your HealthBar here")]
+    public HealthBar healthBar;
+    public float currentHealth;
+
     // --- Unity Methods ---
 
     void Start()
@@ -68,6 +73,13 @@ public class PlayerScript : MonoBehaviour
             if (footstepAudioSource == null)
                 Debug.LogWarning("Footstep Audio Source is not assigned and could not be found on Player!", this);
         }
+        if (healthBar == null)
+        {
+            healthBar = FindFirstObjectByType<HealthBar>();
+            if (healthBar == null)
+                Debug.LogError("HealthBar is not assigned on Player and could not be found!");
+        }
+        currentHealth = healthBar.slider.value;
     }
 
     void Update()
@@ -278,7 +290,8 @@ public class PlayerScript : MonoBehaviour
                         enemyScript.TakeDamage(currentItemDamage); // Use TakeDamage function
                         if (enemyRb != null) {
                             // Use AddForce for better knockback feel
-                            enemyRb.AddForce(knockbackDirection * knockBack, ForceMode2D.Impulse);
+                            enemyRb.AddForce(knockbackDirection * knockBack, ForceMode2D.Impulse); // knockback not working
+                            //enemyRb.position = knockbackDirection * knockBack;
                         }
                         attackCooldownActive = true;
                         return; // Hit only one thing per swing
@@ -287,7 +300,8 @@ public class PlayerScript : MonoBehaviour
                     {
                         enemyScript2.health -= currentItemDamage; // Assuming this script doesn't have TakeDamage yet
                         if (enemyRb != null) {
-                            enemyRb.AddForce(knockbackDirection * knockBack, ForceMode2D.Impulse);
+                            enemyRb.AddForce(knockbackDirection * knockBack, ForceMode2D.Impulse); // knockback not working
+                            //enemyRb.position = knockbackDirection * knockBack;
                         }
                         attackCooldownActive = true;
                         return; // Hit only one thing per swing
