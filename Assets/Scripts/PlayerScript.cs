@@ -20,103 +20,75 @@ public class PlayerScript : MonoBehaviour
     private bool attackCooldownActive = false;
     public float attackCooldownDuration = 0.5f;
 
-    private CraftingManager craftingManager;
-    
     [Header("Item Holding")]
-    public SpriteRenderer heldItemSprite; // Drag your 'HeldItem' child object's SpriteRenderer here
-    private float currentItemDamage = 1f; // Stores the damage of the currently held item. Defaults to 1 (fist).
+    public SpriteRenderer heldItemSprite;
+    private float currentItemDamage = 1f;
 
-    // --- ⭐ NEW VARIABLES ADDED HERE ---
     [Header("Component References")]
     [Tooltip("Drag your InventoryManager object here")]
-    public InventoryManager inventoryManager; 
+    public InventoryManager inventoryManager;
     [Tooltip("Drag your HungerBar object here")]
-    public HungerBar hungerBar;               
-    // ---------------------------------
+    public HungerBar hungerBar;
+    [Tooltip("Drag your LogicManager (with the CraftingManager) here")]
+    public CraftingManager craftingManager; // ⭐ Make sure this is assigned in Inspector
 
-    // --- Start() Method ---
     void Start()
     {
-        GameObject craftingManagerObject = GameObject.FindGameObjectWithTag("Crafting");
-        if (craftingManagerObject != null)
-        {
-            craftingManager = craftingManagerObject.GetComponent<CraftingManager>();
-        }
+        // --- Use Inspector references instead of Find ---
         if (craftingManager == null)
-        {
-            Debug.LogError("Player could not find the CraftingManager!");
-        }
+            Debug.LogError("CraftingManager is not assigned on Player!", this);
 
-        // --- ⭐ ADDED: Safety checks for new components ---
         if (inventoryManager == null)
-        {
-            // Try to find it if not assigned
-            inventoryManager = FindFirstObjectByType<InventoryManager>();
-            if (inventoryManager == null)
-                Debug.LogError("InventoryManager is not assigned on Player and could not be found!");
-        }
+            Debug.LogError("InventoryManager is not assigned on Player!", this);
+        // --- End Inspector references ---
+
         if (hungerBar == null)
         {
-            // Try to find it if not assigned
             hungerBar = FindFirstObjectByType<HungerBar>();
             if (hungerBar == null)
                 Debug.LogError("HungerBar is not assigned on Player and could not be found!");
         }
-        // ------------------------------------------------
     }
 
-    // --- Update() Method ---
     void Update()
     {
-        prototypeMovement();        
-        handleMovementAnimations(); 
-        handleFightAnimations();    
-        handleAttacks();            
+        prototypeMovement();
+        handleMovementAnimations();
+        handleFightAnimations();
+        handleAttacks();
+        // Removed HandleFootsteps();
 
-        // --- ⭐ NEW "EAT" LOGIC ADDED HERE ---
-        // Check for right mouse click (Mouse1) to eat
-        if (Input.GetKeyDown(KeyCode.Mouse1)) 
+        if (Input.GetKeyDown(KeyCode.Mouse1))
         {
             HandleEating();
         }
-        // ------------------------------------
     }
 
-    // --- ⭐ NEW FUNCTION ADDED HERE ---
     private void HandleEating()
     {
         if (inventoryManager == null || hungerBar == null) return;
 
-        // Get the currently selected item
-        Item selectedItem = inventoryManager.GetSelectedItem(false); // false = don't use/consume item yet
+        Item selectedItem = inventoryManager.GetSelectedItem(false);
 
-        // Check if we actually got an item and if that item is food
         if (selectedItem != null && selectedItem.isFood)
         {
-            // It's food! Now tell the inventory to consume one
-            inventoryManager.GetSelectedItem(true); // true = use/consume one item
-            
-            // Call the HungerBar's EatFood function
+            inventoryManager.GetSelectedItem(true);
             hungerBar.EatFood(selectedItem.hungerRestore, selectedItem.healthRestore);
         }
     }
-    // ---------------------------------
-    
-    // --- prototypeMovement() Method ---
+
     void prototypeMovement()
     {
-        // Check for attack input first
-        if (Input.GetKey(KeyCode.Space)) // Assuming Space is attack
+        if (Input.GetKey(KeyCode.Space))
         {
             isMoving = false;
-            isAttacking = true; // Set attack state
+            isAttacking = true;
         }
         else
         {
-            isAttacking = false; // Clear attack state if Space is not held
+            isAttacking = false;
         }
 
-        // Only allow movement if not attacking
         if (!isAttacking)
         {
             Vector3 moveDirection = Vector3.zero;
@@ -142,7 +114,6 @@ public class PlayerScript : MonoBehaviour
                 direction = "down";
             }
 
-            // Apply movement and update state
             if (moveDirection != Vector3.zero)
             {
                 isMoving = true;
@@ -150,19 +121,18 @@ public class PlayerScript : MonoBehaviour
             }
             else
             {
-                isMoving = false; // No movement keys pressed
+                isMoving = false;
             }
         } else {
-             isMoving = false; // Ensure not moving if attacking
+             isMoving = false;
         }
     }
-    
-    // --- handleMovementAnimations() Method ---
+
     void handleMovementAnimations()
     {
-        myAnimator.SetBool("isMoving", isMoving); 
+        myAnimator.SetBool("isMoving", isMoving);
 
-        if (isMoving) 
+        if (isMoving)
         {
             if (direction == "left")
             {
@@ -183,36 +153,32 @@ public class PlayerScript : MonoBehaviour
                 myAnimator.SetBool("isLeftRight", false);
                 myAnimator.SetBool("isUp", true);
                 myAnimator.SetBool("isDown", false);
-                mySpriteRenderer.flipX = false; 
+                mySpriteRenderer.flipX = false;
             }
             else if (direction == "down")
             {
                 myAnimator.SetBool("isLeftRight", false);
                 myAnimator.SetBool("isUp", false);
                 myAnimator.SetBool("isDown", true);
-                mySpriteRenderer.flipX = false; 
+                mySpriteRenderer.flipX = false;
             }
         }
     }
-    
-    // --- handleFightAnimations() Method ---
+
     void handleFightAnimations()
     {
-        myAnimator.SetBool("isAttacking", isAttacking); // Use the state variable
+         myAnimator.SetBool("isAttacking", isAttacking);
 
-        // Only activate hitboxes and set specific attack anims if attacking
         if (isAttacking)
         {
-            // Update directional animations based on 'direction'
-            handleMovementAnimations(); // Reuse movement anim logic for direction
+            handleMovementAnimations();
 
-            // Activate correct hitbox based on 'direction'
             leftHitBox.SetActive(direction == "left");
             rightHitBox.SetActive(direction == "right");
             upHitBox.SetActive(direction == "up");
             downHitBox.SetActive(direction == "down");
         }
-        else // Ensure all hitboxes are off if not attacking
+        else
         {
             leftHitBox.SetActive(false);
             rightHitBox.SetActive(false);
@@ -220,8 +186,7 @@ public class PlayerScript : MonoBehaviour
             downHitBox.SetActive(false);
         }
     }
-    
-    // --- handleAttacks() Method ---
+
     void handleAttacks()
     {
         if (attackCooldownActive)
@@ -236,124 +201,115 @@ public class PlayerScript : MonoBehaviour
 
         if (isAttacking && !attackCooldownActive)
         {
-            CheckHitbox(leftHitBox, Vector3.left);
-            CheckHitbox(rightHitBox, Vector3.right);
-            CheckHitbox(upHitBox, Vector3.up);
-            CheckHitbox(downHitBox, Vector3.down);
+            CheckHitbox(leftHitBox, Vector2.left);
+            CheckHitbox(rightHitBox, Vector2.right);
+            CheckHitbox(upHitBox, Vector2.up);
+            CheckHitbox(downHitBox, Vector2.down);
         }
     }
-    
-    // --- CheckHitbox() Method ---
+
     void CheckHitbox(GameObject hitbox, Vector2 knockbackDirection)
     {
-         if (!hitbox.activeInHierarchy) return; // Don't check inactive hitboxes
+         if (!hitbox.activeInHierarchy) return;
 
          List<Collider2D> results = new List<Collider2D>();
-         // Correct way to get overlaps for 2D Physics
-         ContactFilter2D filter = ContactFilter2D.noFilter; // Or configure filter if needed
+         ContactFilter2D filter = ContactFilter2D.noFilter;
          int hitCount = hitbox.GetComponent<Collider2D>().Overlap(filter, results);
 
          if (hitCount > 0)
          {
              foreach (Collider2D c in results)
              {
-                 if (c.CompareTag("Enemy")) // Use CompareTag for efficiency
+                 if (c.CompareTag("Enemy"))
                  {
                     FollowPlayerScript enemyScript = c.gameObject.GetComponent<FollowPlayerScript>();
                     MoveAndFollowPlayerScript enemyScript2 = c.gameObject.GetComponent<MoveAndFollowPlayerScript>();
 
                     if (enemyScript != null)
                     {
-                        //Debug.Log("ENEMY HEALTH: " + enemyScript.health);
-                        enemyScript.health -= 1; // Assuming damage is 1
-
-                        // Apply knockback if enemy has Rigidbody2D
+                        enemyScript.health -= currentItemDamage;
                         Rigidbody2D enemyRb = c.attachedRigidbody;
-
-                        if (enemyRb != null)
-                        {
+                        if (enemyRb != null) {
                             enemyRb.position += knockbackDirection * knockBack;
-                            //c.attachedRigidbody.linearVelocity = knockbackDirection * knockBack;
-                            attackCooldownActive = true; // Start cooldown
+                            attackCooldownActive = true;
                         }
-                        //break; // Only hit one enemy per swing in this direction
                     }
-
-                    // for moving and follow enemies
                     if (enemyScript2 != null)
                     {
-                        //Debug.Log("ENEMY HEALTH: " + enemyScript2.health);
-                        enemyScript2.health -= 1; // Assuming damage is 1
-
-                        // Apply knockback if enemy has Rigidbody2D
+                        enemyScript2.health -= currentItemDamage;
                         Rigidbody2D enemyRb = c.attachedRigidbody;
-
-                        if (enemyRb != null)
-                        {
+                        if (enemyRb != null) {
                             enemyRb.position += knockbackDirection * knockBack;
-                            attackCooldownActive = true; // Start cooldown
+                            attackCooldownActive = true;
                         }
-                        break; // Only hit one enemy per swing in this direction
+                        break;
                     }
-                }
-                 // Add checks for other tags here (e.g., "ResourceNode") if needed
+                 }
+                 else if (c.CompareTag("Resource"))
+                 {
+                     TreeResource treeScript = c.gameObject.GetComponent<TreeResource>();
+                     if (treeScript != null) {
+                         treeScript.TakeDamage(currentItemDamage);
+                         attackCooldownActive = true;
+                         return;
+                     }
+                     StoneResource stoneScript = c.gameObject.GetComponent<StoneResource>();
+                     if (stoneScript != null) {
+                         stoneScript.TakeDamage(currentItemDamage);
+                         attackCooldownActive = true;
+                         return;
+                     }
+                 }
              }
          }
     }
-    
-    // --- OnTriggerEnter2D() Method ---
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         CraftingStationIdentifier station = other.GetComponent<CraftingStationIdentifier>();
         if (station != null && craftingManager != null)
         {
+            Debug.Log("Entered crafting station area: " + station.stationType);
             craftingManager.SetCurrentCraftingStation(station.stationType);
         }
     }
-    
-    // --- OnTriggerExit2D() Method ---
+
     private void OnTriggerExit2D(Collider2D other)
     {
         CraftingStationIdentifier station = other.GetComponent<CraftingStationIdentifier>();
         if (station != null && craftingManager != null)
         {
+            Debug.Log("Left crafting station area: " + station.stationType);
             craftingManager.SetCurrentCraftingStation(CraftingStation.None);
         }
     }
-    
-    // --- UpdateHeldItem() Method ---
+
     public void UpdateHeldItem(Sprite spriteToShow)
     {
-        if (heldItemSprite == null)
-        {
+        if (heldItemSprite == null) {
             Debug.LogError("HeldItemSprite is not assigned on the PlayerScript!");
             return;
         }
-
-        if (spriteToShow == null)
-        {
+        if (spriteToShow == null) {
             heldItemSprite.sprite = null;
             heldItemSprite.enabled = false;
         }
-        else
-        {
+        else {
             heldItemSprite.sprite = spriteToShow;
             heldItemSprite.enabled = true;
         }
     }
-    
-    // --- UpdateCurrentDamage() Method ---
+
     public void UpdateCurrentDamage(float newDamage)
     {
-        // If the item has 0 or invalid damage, default to 1 (fist)
-        if (newDamage <= 0)
-        {
+        if (newDamage <= 0) {
             currentItemDamage = 1f;
         }
-        else
-        {
+        else {
             currentItemDamage = newDamage;
         }
         Debug.Log($"Player's damage updated to: {currentItemDamage}");
     }
+
+    // Removed HandleFootsteps() and PlayFootstepSound()
 }

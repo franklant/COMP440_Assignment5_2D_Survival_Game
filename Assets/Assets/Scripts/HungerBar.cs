@@ -26,7 +26,7 @@ public class HungerBar : MonoBehaviour
     void Start()
     {
         if (logicManager == null)
-            logicManager = FindAnyObjectByType<LogicManagerScript>();
+            logicManager = FindObjectOfType<LogicManagerScript>();
 
         currentHunger = maxHunger;
         currentHealth = maxHealth;
