@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5571718436336991415}
   - component: {fileID: 509800790746092060}
   - component: {fileID: 7380085036688287107}
+  - component: {fileID: 3771111170416863453}
   m_Layer: 0
   m_Name: RandomFollowEnemy
   m_TagString: Enemy
@@ -182,10 +183,11 @@ MonoBehaviour:
   myRigidBody: {fileID: 5571718436336991415}
   myBoxCollider: {fileID: 509800790746092060}
   mySpriteRenderer: {fileID: 8455238542551179143}
+  myAnimator: {fileID: 3771111170416863453}
   health: 5
   movementSpeed: 0.7
   detectionRadius: 1
-  stoppingDistance: 0.1
+  stoppingDistance: 0.2
   isAttacked: 0
   currentState: 0
   moveDuration: 5
@@ -194,6 +196,28 @@ MonoBehaviour:
   amountToDrop: 1
   damageAmount: 20
   timeBetweenAttacks: 1.5
+--- !u!95 &3771111170416863453
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5933675642820828803}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 436deb1b09d25b142b9827ea71d9a26a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &3264679232654526752
 PrefabInstance:
   m_ObjectHideFlags: 0

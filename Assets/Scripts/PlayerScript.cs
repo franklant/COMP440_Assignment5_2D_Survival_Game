@@ -21,6 +21,9 @@ public class PlayerScript : MonoBehaviour
     private bool attackCooldownActive = false;
     public float attackCooldownDuration = 0.5f;
 
+    [Header("Access Crafting Table")]
+    public GameObject craftingTable;
+
     [Header("Movement")]
     public float movementSpeed;
     private string direction = "down";
@@ -104,6 +107,7 @@ public class PlayerScript : MonoBehaviour
         {
             Debug.Log("Entered crafting station area: " + station.stationType);
             craftingManager.SetCurrentCraftingStation(station.stationType);
+            craftingTable.SetActive(true);
         }
     }
 
@@ -114,6 +118,7 @@ public class PlayerScript : MonoBehaviour
         {
             Debug.Log("Left crafting station area: " + station.stationType);
             craftingManager.SetCurrentCraftingStation(CraftingStation.None);
+            craftingTable.SetActive(false);
         }
     }
 

@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using Random = UnityEngine.Random; // Be specific because 'System' also has a Random
 
@@ -9,6 +8,10 @@ public class MoveAndFollowPlayerScript : MonoBehaviour
     public BoxCollider2D myBoxCollider;
     public SpriteRenderer mySpriteRenderer;
     private PlayerScript playerScript; // ⭐ Reference to the player script
+
+
+    [Header("Animation")]
+    public Animator myAnimator;
 
     [Header("Stats")]
     public float health = 5;
@@ -58,12 +61,22 @@ public class MoveAndFollowPlayerScript : MonoBehaviour
         {
             Debug.LogError("Cannot Access Backgrounnd Plane Object/Sprite Renderer!");
             // Consider disabling script if bounds are essential: enabled = false; return;
-        } else
+        }
+        else
         {
             // Calculate bounds based on center pivot assumed
             yBounds = backgroundPlaneRenderer.bounds.extents.y;
             xBounds = backgroundPlaneRenderer.bounds.extents.x;
         }
+        
+        // find animator if null
+        // if (myAnimator == null)
+        // {
+        //     myAnimator == GetComponent<Animator>;
+        // } else
+        // {
+        //     Debug.LogError("Unable to find the enemies 'Animator' component");
+        // }
 
         attackTimer = 0; // Start ready to attack if close enough
     }
@@ -109,6 +122,9 @@ public class MoveAndFollowPlayerScript : MonoBehaviour
             if (distanceToTarget > stoppingDistance + 0.1f)
             {
                 // Move towards player
+                myAnimator.SetBool("isWalking", true);
+                myAnimator.SetBool("isAttacking", false);
+
                 currentState = moveState; // Or just set velocity directly
                 direction = (target.position - transform.position).normalized; // Correct direction towards player
                 myRigidBody.linearVelocity = direction * movementSpeed;
@@ -117,6 +133,8 @@ public class MoveAndFollowPlayerScript : MonoBehaviour
             }
             else
             {
+                myAnimator.SetBool("isAttacking", true);
+        
                 // Stop and Attack
                 currentState = followState; // Represents being close/attacking
                 myRigidBody.linearVelocity = Vector2.zero; // Stop moving
@@ -228,12 +246,12 @@ public class MoveAndFollowPlayerScript : MonoBehaviour
         // transform.rotation = Quaternion.Euler(0, 0, angle); // Snaps instantly
 
         // Optional: Smooth rotation (requires Quaternion.Slerp and rotationSpeed variable)
-        Quaternion targetRotation = Quaternion.Euler(0, 0, angle + 90f); // Adjust angle offset based on your sprite's default orientation
+        Quaternion targetRotation = Quaternion.Euler(0, 0, angle + 180f); // Adjust angle offset based on your sprite's default orientation
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f); // 10f is rotation speed
 
         // Flipping logic might need adjustment based on sprite orientation and rotation method
         // This flipY logic assumes sprite faces right by default
-        mySpriteRenderer.flipY = (angle > 90 || angle < -90);
+        mySpriteRenderer.flipY = (angle > -95 && angle < 90);
 
     }
     // --- ⭐ -------------------------- ---
