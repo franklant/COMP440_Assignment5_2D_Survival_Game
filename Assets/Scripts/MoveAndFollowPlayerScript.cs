@@ -68,15 +68,8 @@ public class MoveAndFollowPlayerScript : MonoBehaviour
             yBounds = backgroundPlaneRenderer.bounds.extents.y;
             xBounds = backgroundPlaneRenderer.bounds.extents.x;
         }
-        
-        // find animator if null
-        // if (myAnimator == null)
-        // {
-        //     myAnimator == GetComponent<Animator>;
-        // } else
-        // {
-        //     Debug.LogError("Unable to find the enemies 'Animator' component");
-        // }
+
+        myAnimator.SetBool("isWalking", true);
 
         attackTimer = 0; // Start ready to attack if close enough
     }
