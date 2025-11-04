@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic; // Needed for List in handleAttacks
 using Random = UnityEngine.Random;
-using JetBrains.Annotations; // Be specific
+using JetBrains.Annotations;
+using UnityEngine.SocialPlatforms; // Be specific
 
 public class PlayerScript : MonoBehaviour
 {
@@ -20,6 +21,8 @@ public class PlayerScript : MonoBehaviour
     private float attackCooldown = 0;
     private bool attackCooldownActive = false;
     public float attackCooldownDuration = 0.5f;
+    private bool isAttacked = false;
+    private float time = 0;
 
     [Header("Access Crafting Table")]
     public GameObject craftingTable;
@@ -46,6 +49,9 @@ public class PlayerScript : MonoBehaviour
     public List<AudioClip> snowStepSounds;  // Assign sounds in Inspector
     public float timeBetweenSteps = 0.4f;
     private float footstepTimer;
+
+    [Tooltip("Sound to play when the player is attacked")]
+    public AudioClip hitSound;
 
     [Tooltip("Drag your HealthBar here")]
     public HealthBar healthBar;
@@ -97,6 +103,24 @@ public class PlayerScript : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
             HandleEating();
+        }
+
+        if (!isAttacked)
+        {
+            mySpriteRenderer.color = Color.white;
+            time = 0;
+        }
+        else
+        {
+            if (time < 1f)
+            {
+                time += Time.deltaTime;
+                mySpriteRenderer.color = Color.darkRed;
+            } else
+            {
+                isAttacked = false;
+                time = 0;
+            }
         }
     }
 
@@ -347,6 +371,11 @@ public class PlayerScript : MonoBehaviour
         {
             Debug.LogError("Player cannot take damage - HungerBar reference is missing!", this);
         }
+
+        isAttacked = true;
+
+        if (hitSound != null)
+            AudioSource.PlayClipAtPoint(hitSound, transform.position, 0.7f); // 0.7f is volume
     }
 
     // --- Item & Inventory ---

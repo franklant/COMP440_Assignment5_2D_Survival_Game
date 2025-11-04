@@ -741,12 +741,20 @@ MonoBehaviour:
   rightHitBox: {fileID: 8280775079348560667}
   upHitBox: {fileID: 6374029652695266384}
   downHitBox: {fileID: 3717870742640155638}
-  movementSpeed: 1
   knockBack: 0.3
   attackCooldownDuration: 0.2
+  craftingTable: {fileID: 0}
+  movementSpeed: 1
   heldItemSprite: {fileID: 0}
   inventoryManager: {fileID: 0}
   hungerBar: {fileID: 0}
+  craftingManager: {fileID: 0}
+  footstepAudioSource: {fileID: 0}
+  snowStepSounds: []
+  timeBetweenSteps: 0.4
+  hitSound: {fileID: 0}
+  healthBar: {fileID: 0}
+  currentHealth: 0
 --- !u!95 &778645465279357395
 Animator:
   serializedVersion: 7

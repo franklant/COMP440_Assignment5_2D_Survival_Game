@@ -67,7 +67,7 @@ public class FollowPlayerScript : MonoBehaviour
                 Vector3 direction = (transform.position - target.transform.position).normalized;
                 myRigidBody.linearVelocity = -direction * movementSpeed;
                 RotateTowardsPlayer(direction);
-                attackTimer = timeBetweenAttacks; // Reset attack timer if moving
+                attackTimer = 0.5f; // Reset attack timer if moving
             }
             else
             {
@@ -92,7 +92,7 @@ public class FollowPlayerScript : MonoBehaviour
         {
             // Player is out of range or enemy is attacked, stop moving
             myRigidBody.linearVelocity = Vector3.zero;
-            attackTimer = 0; // Reset timer if player runs away
+            attackTimer = timeBetweenAttacks; // Reset timer if player runs away
         }
         // --- ⭐ END MODIFIED LOGIC ---
 

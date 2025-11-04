@@ -129,7 +129,7 @@ public class MoveAndFollowPlayerScript : MonoBehaviour
                 direction = (target.position - transform.position).normalized; // Correct direction towards player
                 myRigidBody.linearVelocity = direction * movementSpeed;
                 RotateTowards(direction);
-                attackTimer = timeBetweenAttacks; // Reset attack timer while moving closer
+                attackTimer = 0.5f; // Reset attack timer while moving closer (TIMEBETWEENATTACKS)
             }
             else
             {
@@ -154,7 +154,7 @@ public class MoveAndFollowPlayerScript : MonoBehaviour
         {
             // Player out of range or enemy was attacked - Scatter/Move randomly
             shouldFollow = false;
-            attackTimer = 0; // Reset attack timer
+            attackTimer = timeBetweenAttacks; // Reset attack timer
 
             // Perform Scatter/Move logic only if not following
             if (currentState == scatterState)
