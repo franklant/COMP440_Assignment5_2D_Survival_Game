@@ -107,6 +107,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3af177d26ffe45a43bef337febcf2934, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  myAnimator: {fileID: 3087748852793544188}
   myRigidBody: {fileID: 5996963686441103152}
   mySpriteRenderer: {fileID: 8936832312466334061}
   health: 25

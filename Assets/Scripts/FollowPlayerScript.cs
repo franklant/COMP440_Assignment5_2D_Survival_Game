@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class FollowPlayerScript : MonoBehaviour
 {
+    public Animator myAnimator;
     private Transform target;
     public Rigidbody2D myRigidBody;
     public SpriteRenderer mySpriteRenderer;
@@ -61,6 +62,7 @@ public class FollowPlayerScript : MonoBehaviour
             // Player is within detection range
             if (distanceToTarget > stoppingDistance + 0.1f)
             {
+                myAnimator.SetBool("isAttacking", false);
                 // Move towards player if not too close
                 Vector3 direction = (transform.position - target.transform.position).normalized;
                 myRigidBody.linearVelocity = -direction * movementSpeed;
@@ -69,6 +71,7 @@ public class FollowPlayerScript : MonoBehaviour
             }
             else
             {
+                myAnimator.SetBool("isAttacking", true);
                 // Stop moving, we are close enough to attack
                 myRigidBody.linearVelocity = Vector3.zero;
                 // Ensure facing player even when stopped
