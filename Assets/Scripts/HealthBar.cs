@@ -10,6 +10,7 @@ public class HealthBar : MonoBehaviour
     public float realHealth; // new variable that mirrors slider value
     public Slider slider;
     public GameObject deathCutscene;
+    private string sceneToLoad = "DeathScene";
 
     void Start()
     {
@@ -80,7 +81,8 @@ public class HealthBar : MonoBehaviour
 
     void Die()
     {
-        deathCutscene.SetActive(true); // appers the cutscene
+        SceneManager.LoadScene(sceneToLoad);// appers the cutscene
         Debug.Log("Player has died!");
     }
 }
+
