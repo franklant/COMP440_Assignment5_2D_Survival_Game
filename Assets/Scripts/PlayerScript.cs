@@ -311,6 +311,7 @@ public class PlayerScript : MonoBehaviour
                  {
                     FollowPlayerScript enemyScript = c.gameObject.GetComponent<FollowPlayerScript>();
                     MoveAndFollowPlayerScript enemyScript2 = c.gameObject.GetComponent<MoveAndFollowPlayerScript>();
+                    SkeletonFollowPlayerScript enemyScript3 = c.gameObject.GetComponent<SkeletonFollowPlayerScript>();
 
                     Rigidbody2D enemyRb = c.attachedRigidbody; // Get Rigidbody once
 
@@ -329,7 +330,19 @@ public class PlayerScript : MonoBehaviour
                     if (enemyScript2 != null)
                     {
                         enemyScript2.TakeDamage(currentItemDamage); // Assuming this script doesn't have TakeDamage yet
-                        if (enemyRb != null) {
+                        if (enemyRb != null)
+                        {
+                            enemyRb.AddForce(knockbackDirection * knockBack, ForceMode2D.Impulse); // knockback not working
+                            //enemyRb.position = knockbackDirection * knockBack;
+                        }
+                        attackCooldownActive = true;
+                        return; // Hit only one thing per swing
+                    }
+                    if (enemyScript3 != null)
+                    {
+                        enemyScript3.TakeDamage(currentItemDamage); // Assuming this script doesn't have TakeDamage yet
+                        if (enemyRb != null)
+                        {
                             enemyRb.AddForce(knockbackDirection * knockBack, ForceMode2D.Impulse); // knockback not working
                             //enemyRb.position = knockbackDirection * knockBack;
                         }

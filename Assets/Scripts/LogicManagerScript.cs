@@ -6,10 +6,15 @@ public class LogicManagerScript : MonoBehaviour
 {
     public GameObject globalLight;  // The "Sun" or our main light source
     private Light2D lightSource;    // The actual light source to control the intensity
+
+    [Header("Enemies to Spawn")]
     public GameObject enemy;
     public GameObject enemy2;
+    public GameObject enemy3;
     public GameObject spawnLocation;
     private bool spawnActive;
+
+    [Header ("Time of Day Info")]
     public float minutesInADay = 5; // How many minutes make a full day
     public float currentTime = 0;   // Current time
     private float previousTime = 0; // Prevous time passed
@@ -124,21 +129,25 @@ public class LogicManagerScript : MonoBehaviour
     {
         // get a list of the transforms from each spawn location
         Transform[] locations = spawnLocation.GetComponentsInChildren<Transform>();
-        GameObject[] enemyList = { enemy, enemy2 };
+        GameObject[] enemyList = { enemy, enemy2, enemy3 };
 
         int maxIndex = 11 - 1; // number of locations - 1
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 3; i++)
         {
             int locationIndex = UnityEngine.Random.Range(0, maxIndex);
             Transform lo = locations[locationIndex];
 
             if (lo != null)
             {
-                int enemyIndex = UnityEngine.Random.Range(0, 10);
-                if (enemyIndex > 5)
+                int enemyIndex = UnityEngine.Random.Range(0, 15);
+                if (enemyIndex > 10)
                 {
                     Instantiate(enemy2, lo.position, lo.rotation);
+                }
+                else if (enemyIndex >= 5 && enemyIndex < 10)
+                {
+                    Instantiate(enemy3, lo.position, lo.rotation);
                 }
                 else
                 {
@@ -146,6 +155,10 @@ public class LogicManagerScript : MonoBehaviour
                 }
 
                 locations[locationIndex] = null;    // make the previously selected location no longer available
+            } else
+            {
+                i -= 1; // keep iterating until 3 spawns are found
+                continue;
             }
         }
     }
