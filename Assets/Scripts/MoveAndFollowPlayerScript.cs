@@ -284,6 +284,9 @@ public class MoveAndFollowPlayerScript : MonoBehaviour
     {
         health -= damageAmount;
         Debug.Log($"{gameObject.name} took {damageAmount} damage, {health} health remaining.");
+        
+        //myRigidBody.linearVelocity *= -10;
+
         // Optional: Trigger 'hit' animation, sound, or temporary flee state
         // isAttacked = true; // Example: Trigger flee state
         // Invoke("ClearIsAttacked", 1.0f); // Example: Recover after 1 second
