@@ -72,8 +72,8 @@
     <Compile Include="Library\PackageCache\com.unity.shadergraph@5516e0d97518\Editor\Data\Graphs\Matrix4MaterialSlot.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph@5516e0d97518\Editor\Data\Nodes\Input\Geometry\InstanceIDNode.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph@5516e0d97518\Editor\Data\Nodes\Math\Vector\DistanceNode.cs" />
-    <Compile Include="Library\PackageCache\com.unity.shadergraph@5516e0d97518\Editor\Drawing\Controls\CubemapControl.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph@5516e0d97518\Editor\ShaderGraphShortcuts.cs" />
+    <Compile Include="Library\PackageCache\com.unity.shadergraph@5516e0d97518\Editor\Drawing\Controls\CubemapControl.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph@5516e0d97518\Editor\Data\Nodes\Procedural\Shape\RoundedRectangleNode.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph@5516e0d97518\Editor\Data\Nodes\Math\Range\MaximumNode.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph@5516e0d97518\Editor\Generation\Targets\Canvas\CanvasSubTarget.cs" />
@@ -322,8 +322,8 @@
     <Compile Include="Library\PackageCache\com.unity.shadergraph@5516e0d97518\Editor\Data\Legacy\StickyNoteData0.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph@5516e0d97518\Editor\Drawing\Inspector\PropertyDrawers\Texture3DPropertyDrawer.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph@5516e0d97518\Editor\Data\Nodes\Utility\Logic\AndNode.cs" />
-    <Compile Include="Library\PackageCache\com.unity.shadergraph@5516e0d97518\Editor\Generation\SubTarget.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph@5516e0d97518\Editor\Data\Nodes\Math\Wave\TriangleWaveNode.cs" />
+    <Compile Include="Library\PackageCache\com.unity.shadergraph@5516e0d97518\Editor\Generation\SubTarget.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph@5516e0d97518\Editor\Generation\Contexts\TargetFieldContext.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph@5516e0d97518\Editor\Interface\IRequiresData.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph@5516e0d97518\Editor\Data\Nodes\Input\Scene\FogNode.cs" />

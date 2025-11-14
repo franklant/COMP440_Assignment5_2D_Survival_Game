@@ -111,7 +111,7 @@ MonoBehaviour:
   myRigidBody: {fileID: 5996963686441103152}
   mySpriteRenderer: {fileID: 8936832312466334061}
   health: 25
-  movementSpeed: 0.5
+  movementSpeed: 0.1
   detectionRadius: 1
   stoppingDistance: 0.1
   isAttacked: 0

@@ -55,10 +55,10 @@
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@317e801bb3aa\Runtime\Common\ListBuffer.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@317e801bb3aa\Runtime\RenderGraph\IRenderGraphRecorder.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@317e801bb3aa\Runtime\RenderGraph\Compiler\FixedAttachmentArray.cs" />
-    <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@317e801bb3aa\Runtime\Stripping\IStripper.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@317e801bb3aa\Runtime\Debugging\Prefabs\Scripts\DebugUIHandlerValueTuple.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@317e801bb3aa\Runtime\Debugging\Prefabs\Scripts\DebugUIHandlerGroup.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@317e801bb3aa\Runtime\RenderPipeline\RenderPipelineGlobalSettings.cs" />
+    <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@317e801bb3aa\Runtime\Stripping\IStripper.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@317e801bb3aa\Runtime\Lighting\ProbeVolume\ProbeVolumeAsset.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@317e801bb3aa\Runtime\Utilities\BitArray.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@317e801bb3aa\Runtime\Common\DynamicResolutionHandler.cs" />
