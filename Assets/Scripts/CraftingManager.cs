@@ -6,14 +6,14 @@ public class CraftingManager : MonoBehaviour
 {
     // Assign these in the Inspector
     public InventoryManager inventoryManager;
-    public CraftingUI craftingUI; // ⭐ Assign your CraftingUI panel here
+    public CraftingUI craftingUI; // Assign your CraftingUI panel here
 
     public List<Recipe> recipes;
     private CraftingStation currentStation = CraftingStation.None;
 
     void Start()
     {
-        // ⭐ Safety checks
+        //  Safety checks
         if (craftingUI == null)
         {
             Debug.LogError("CraftingUI is NOT ASSIGNED on the CraftingManager!", this);
@@ -105,7 +105,7 @@ public class CraftingManager : MonoBehaviour
         inventoryManager.AddItem(recipe.outputItem);
         Debug.Log($"<color=green>Successfully crafted {recipe.outputItem.itemName}!</color>");
         
-        // ⭐ Update UI after a successful craft
+        // Update UI after a successful craft
         NotifyCraftingUI();
     }
 
