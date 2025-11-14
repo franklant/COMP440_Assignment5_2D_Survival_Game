@@ -4,25 +4,28 @@ using UnityEngine;
 
 public class CraftingManager : MonoBehaviour
 {
-    // Assign these in the Inspector
-    public InventoryManager inventoryManager;
-    public CraftingUI craftingUI; // Assign your CraftingUI panel here
+    // Assign your main CraftingPanel here
+    public CraftingUI craftingUI; 
+    
+    // --- THIS IS THE MISSING PIECE ---
+    // Assign your new TradingPanel here
+    public CraftingUI tradingUI; 
+    // ---
 
     public List<Recipe> recipes;
     private CraftingStation currentStation = CraftingStation.None;
+    
+    // Assign your InventoryManager in the Inspector
+    public InventoryManager inventoryManager;
 
     void Start()
     {
-        //  Safety checks
-        if (craftingUI == null)
-        {
-            Debug.LogError("CraftingUI is NOT ASSIGNED on the CraftingManager!", this);
-        }
-        if (inventoryManager == null)
-        {
+         if (inventoryManager == null)
+         {
              Debug.LogError("InventoryManager is NOT ASSIGNED on the CraftingManager!", this);
-        }
+         }
          
+         // Notify the main crafting UI on start
          NotifyCraftingUI();
     }
 
@@ -34,14 +37,8 @@ public class CraftingManager : MonoBehaviour
 
     public bool CanCraft(Recipe recipe)
     {
-         if (inventoryManager == null) {
-             Debug.LogError("InventoryManager reference is NULL in CanCraft!");
-             return false;
-         }
-         if (recipe == null) {
-              Debug.LogError("Attempting to check CanCraft for a NULL recipe!");
-              return false;
-         }
+         if (inventoryManager == null) return false;
+         if (recipe == null) return false;
          
         if (recipe.requiredStation != CraftingStation.None && recipe.requiredStation != currentStation)
         {
@@ -50,26 +47,19 @@ public class CraftingManager : MonoBehaviour
 
         foreach (Ingredient ingredient in recipe.ingredients)
         {
-            if (ingredient == null || ingredient.item == null) {
-                Debug.LogError($"Recipe '{recipe.outputItem?.itemName ?? "Unknown"}' has a null ingredient or item!", recipe);
-                return false;
-            }
+            if (ingredient == null || ingredient.item == null) return false;
             if (!inventoryManager.HasItem(ingredient.item, ingredient.quantity))
             {
                 return false; 
             }
         }
-        
         return true;
     }
 
 
     public void Craft(Recipe recipe)
     {
-        if (recipe == null) {
-            Debug.LogError("Craft called with a NULL recipe!");
-            return;
-        }
+        if (recipe == null) return;
 
         if (CanCraft(recipe))
         {
@@ -77,19 +67,14 @@ public class CraftingManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"Crafting failed because CanCraft returned false for {recipe.outputItem?.itemName ?? "Unknown"}.");
-            
-            // ⭐ Force UI update even if craft fails (to fix "stuck green" button)
+            Debug.LogWarning($"Crafting failed for {recipe.outputItem?.itemName ?? "Unknown"}.");
             NotifyCraftingUI(); 
         }
     }
 
     private IEnumerator CraftingCoroutine(Recipe recipe)
     {
-        if (recipe == null || recipe.outputItem == null) {
-            Debug.LogError("CraftingCoroutine started with invalid recipe!");
-            yield break;
-        }
+        if (recipe == null || recipe.outputItem == null) yield break;
 
         Debug.Log($"Crafting {recipe.outputItem.itemName}...");
         yield return new WaitForSeconds(recipe.craftingTime); 
@@ -105,21 +90,23 @@ public class CraftingManager : MonoBehaviour
         inventoryManager.AddItem(recipe.outputItem);
         Debug.Log($"<color=green>Successfully crafted {recipe.outputItem.itemName}!</color>");
         
-        // Update UI after a successful craft
         NotifyCraftingUI();
     }
 
-    // --- ⭐ MODIFIED HELPER TO NOTIFY UI ---
-    // This now uses the direct reference and is public
+    // --- THIS IS THE UPDATED FIX ---
+    // This helper notifies BOTH UI panels
     public void NotifyCraftingUI()
     {
-        if (craftingUI != null)
+        // Update the main crafting UI if it's assigned AND open
+        if (craftingUI != null && craftingUI.gameObject.activeInHierarchy)
         {
             craftingUI.UpdateAllButtons();
         }
-        else
-        {
-            Debug.LogWarning("CraftingManager tried to notify UI, but CraftingUI reference is null.");
+        
+        // Update the trading UI if it's assigned AND open
+        if (tradingUI != null && tradingUI.gameObject.activeInHierarchy)
+       {
+            tradingUI.UpdateAllButtons();
         }
     }
 }

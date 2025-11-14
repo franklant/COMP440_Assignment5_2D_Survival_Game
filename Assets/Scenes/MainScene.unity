@@ -1383,9 +1383,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38e54c51c4385452499ec862fd5fab8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CraftingManager
-  inventoryManager: {fileID: 578545762}
   craftingUI: {fileID: 1586970675}
+  tradingUI: {fileID: 693789332}
   recipes: []
+  inventoryManager: {fileID: 578545762}
 --- !u!4 &222599073
 Transform:
   m_ObjectHideFlags: 0
@@ -2050,7 +2051,6 @@ MonoBehaviour:
   globalLight: {fileID: 619394800}
   enemy: {fileID: 8787146456169844123, guid: d4df41ed2f7faac448b84a50c8d0c396, type: 3}
   enemy2: {fileID: 5933675642820828803, guid: 4b6092b2c0ed0944b94796c5dedcbb96, type: 3}
-  enemy3: {fileID: 1492969915979674292, guid: 5a1d3e914be9f0649b5aa05b8026f419, type: 3}
   spawnLocation: {fileID: 1809686768}
   minutesInADay: 5
   currentTime: 0
@@ -3231,6 +3231,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 6037283199100549924, guid: 9b99709070562450ea905685fcefc63a, type: 3}
   m_PrefabInstance: {fileID: 484331539}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &693789332 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5141025377466855952, guid: 9b99709070562450ea905685fcefc63a, type: 3}
+  m_PrefabInstance: {fileID: 484331539}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 693789325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad6b58bbdd90d4a82b94affe72338d12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CraftingUI
 --- !u!1 &719614264
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,7 +6,6 @@ public class CraftingUI : MonoBehaviour
 {
     [Header("UI References")]
     public GameObject recipeSlotPrefab;
-    // Removed: public Transform slotContainer;
 
     [Header("System References")]
     public CraftingManager craftingManager;
@@ -16,10 +15,17 @@ public class CraftingUI : MonoBehaviour
 
     private List<RecipeSlot> recipeSlots = new List<RecipeSlot>();
 
+    // Start() is called only once. We'll leave it empty.
     void Start()
     {
+        // ...
+    }
+
+    // --- ALL LOGIC MOVED HERE ---
+    // OnEnable() is called EVERY time the panel is activated.
+    void OnEnable()
+    {
         // Safety checks for required references
-        // Removed check for slotContainer
         if (craftingManager == null)
         {
              Debug.LogError("Crafting Manager is NOT assigned on CraftingUI!", this.gameObject);
@@ -31,14 +37,15 @@ public class CraftingUI : MonoBehaviour
              return;
         }
 
+        // These functions will now run every time you open the window
         PopulateRecipeList();
         Debug.Log("Forcing initial UI update after populating.");
         UpdateAllButtons();
     }
+    // ---
 
     void PopulateRecipeList()
     {
-        // --- UPDATED Clearing Logic ---
         // Clear children of THIS transform
         List<GameObject> childrenToDestroy = new List<GameObject>();
         foreach (Transform child in transform) // Target THIS object's children
@@ -65,7 +72,6 @@ public class CraftingUI : MonoBehaviour
                 continue;
             }
 
-            // --- UPDATED Instantiation ---
             // Instantiate as a child of THIS transform
             GameObject slotGO = Instantiate(recipeSlotPrefab, transform);
             RecipeSlot slotScript = slotGO.GetComponent<RecipeSlot>();
@@ -80,15 +86,15 @@ public class CraftingUI : MonoBehaviour
                  Debug.LogError($"Instantiated Recipe Slot Prefab for recipe '{recipe.name}' is MISSING the RecipeSlot script!", slotGO);
             }
         }
-         // --- UPDATED Layout Rebuild ---
-         // Target THIS object's RectTransform
          LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
     }
 
 
     public void UpdateAllButtons()
     {
-        // Ensure recipeSlots is not null before iterating
+        // This is the debug line you requested
+        Debug.Log($"<color=cyan>UI REFRESH: {gameObject.name} is updating all buttons.</color>");
+
         if (recipeSlots == null)
         {
             Debug.LogError("recipeSlots list is null in UpdateAllButtons!");
@@ -97,7 +103,7 @@ public class CraftingUI : MonoBehaviour
 
         foreach (RecipeSlot slot in recipeSlots)
         {
-            if (slot != null) // Add null check for individual slots
+            if (slot != null) 
             {
                 slot.UpdateVisuals();
             }
@@ -108,22 +114,13 @@ public class CraftingUI : MonoBehaviour
         }
     }
 
-
-    /// <summary>
-    /// A helper function that allows other scripts (like RecipeSlot)
-    /// to check if a recipe can be crafted by passing the request to the CraftingManager.
-    /// </summary>
     public bool CanCraft(Recipe recipe)
     {
-       // --- FIXED IMPLEMENTATION ---
-       // Add safety check for manager
-        if (craftingManager == null)
+       if (craftingManager == null)
         {
             Debug.LogError("CraftingManager reference is null in CraftingUI.CanCraft!");
-            return false; // Return false if manager is missing
+            return false;
         }
-        // Always return the result from the actual CraftingManager
         return craftingManager.CanCraft(recipe);
     }
 }
-
