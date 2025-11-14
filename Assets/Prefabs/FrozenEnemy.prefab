@@ -207,7 +207,7 @@ MonoBehaviour:
   mySpriteRenderer: {fileID: 5575180943139314684}
   myAnimator: {fileID: 4316317049155285798}
   health: 15
-  movementSpeed: 0.8
+  movementSpeed: 0.5
   detectionRadius: 1.5
   stoppingDistance: 0.2
   isAttacked: 0
