@@ -97,3 +97,10 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+
+# Ignore Plastic SCM files
+.plastic/
+*.changes
+*.wktree
+*.bak
+.plastic/plastic.changes
